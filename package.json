@@ -272,9 +272,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.5",
-    "source-map-support": "^0.5.19",
-    "sqlite": "^4.0.19",
-    "sqlite3": "^5.0.1"
+    "source-map-support": "^0.5.19"
   },
   "devEngines": {
     "node": ">=10.x",
