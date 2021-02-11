@@ -1,10 +1,14 @@
 const path = require('path');
 
-const {open} = require('sqlite');
+const { app } = require('electron');
+const { open } = require('sqlite');
 const sqlite3 = require('sqlite3');
 
-const connection = {
+const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'src', 'database')
+  : path.join(__dirname);
 
+const connection = {
   async openDb(filename) {
     return open({
       filename,
@@ -13,18 +17,15 @@ const connection = {
   },
 
   async query(callback) {
-    const dbPath = path.resolve(__dirname, 'cashflow.db');
+    const dbPath = path.join(RESOURCES_PATH, 'cashflow.db');
     const db = await this.openDb(dbPath);
 
     try {
       await callback(db);
-    } catch (err) {
-      throw err;
     } finally {
       db.close();
     }
   },
-
 };
 
 module.exports = connection;
