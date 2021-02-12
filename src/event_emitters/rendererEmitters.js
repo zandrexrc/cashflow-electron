@@ -1,4 +1,5 @@
-const electron = window.require('electron');
+const electron = require('electron');
+
 const { ipcRenderer } = electron;
 
 export default function fetch(action, payload) {
