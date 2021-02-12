@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "sqlite": "^4.0.19",
-    "sqlite3": "^5.0.1"
+    "sqlite3": "5.0.0"
   },
   "devDependencies": {
     "@types/chart.js": "^2.9.30",
