@@ -1,26 +1,25 @@
 import React from 'react';
 
-import {IconButton, Paper, Slide, Typography} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { IconButton, Paper, Slide, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PropTypes from 'prop-types';
 
-import {Account} from '../../types';
-
+import { Account } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': 'calc(50%)',
-    'height': '100vh',
-    'minWidth': '500px',
-    'maxHeight': '100vh',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'position': 'absolute',
-    'right': '0',
-    'overflow': 'auto',
+    width: 'calc(50%)',
+    height: '100vh',
+    minWidth: '500px',
+    maxHeight: '100vh',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    position: 'absolute',
+    right: '0',
+    overflow: 'auto',
     '& .header': {
       width: 'calc(100% - 30px)',
       height: '64px',
@@ -31,12 +30,12 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '& .details': {
-      'width': 'calc(100% - 80px)',
-      'height': 'calc(100% - 64px)',
-      'display': 'flex',
-      'flexFlow': 'column nowrap',
-      'alignItems': 'flex-start',
-      'margin': '0 auto',
+      width: 'calc(100% - 80px)',
+      height: 'calc(100% - 64px)',
+      display: 'flex',
+      flexFlow: 'column nowrap',
+      alignItems: 'flex-start',
+      margin: '0 auto',
       '& .pos': {
         color: theme.palette.success.main,
       },
@@ -62,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IProps {
   account: Account | null | undefined;
   close: () => void;
@@ -70,8 +68,7 @@ interface IProps {
   deleteItem: () => void;
   isOpen: boolean;
   openFormTab: () => void;
-};
-
+}
 
 const AccountDetails = ({
   account,
@@ -94,35 +91,28 @@ const AccountDetails = ({
             <IconButton onClick={openFormTab}>
               <EditIcon />
             </IconButton>
-            <IconButton
-              onClick={deleteItem}
-            >
+            <IconButton onClick={deleteItem}>
               <DeleteIcon />
             </IconButton>
           </div>
         </div>
-        {
-          account &&
+        {account && (
           <div className="details">
             <Typography variant="body1" align="right" color="textSecondary">
               {account.type}
             </Typography>
-            <Typography variant="h5">
-              {account.name}
-            </Typography>
+            <Typography variant="h5">{account.name}</Typography>
             <Typography
               variant="h3"
               className={account.balance < 0 ? 'neg' : 'pos'}
             >
-              {
-                account.balance < 0 ?
-                `- ${currency}
-                  ${Math.abs(account.balance).toFixed(2)}` :
-                `${currency} ${account.balance.toFixed(2)}`
-              }
+              {account.balance < 0
+                ? `- ${currency}
+                  ${Math.abs(account.balance).toFixed(2)}`
+                : `${currency} ${account.balance.toFixed(2)}`}
             </Typography>
           </div>
-        }
+        )}
       </Paper>
     </Slide>
   );
@@ -130,7 +120,12 @@ const AccountDetails = ({
 
 AccountDetails.propTypes = {
   /** The Account to be displayed */
-  account: PropTypes.object,
+  account: PropTypes.shape({
+    accountId: PropTypes.number,
+    name: PropTypes.string,
+    type: PropTypes.string,
+    balance: PropTypes.number,
+  }),
   /** Function to close the component */
   close: PropTypes.func.isRequired,
   /** The currency symbol */
@@ -143,4 +138,8 @@ AccountDetails.propTypes = {
   openFormTab: PropTypes.func.isRequired,
 };
 
-export {AccountDetails};
+AccountDetails.defaultProps = {
+  account: null,
+};
+
+export default AccountDetails;

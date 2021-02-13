@@ -1,5 +1,5 @@
-export * from './navigation';
+export { default as Navigation } from './navigation';
 export * from './objects';
-export * from './onboarding';
+export { default as OnboardingSlides } from './onboarding';
 export * from './dates';
 export * from './redux';

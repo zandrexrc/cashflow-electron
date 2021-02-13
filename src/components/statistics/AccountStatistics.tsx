@@ -1,23 +1,23 @@
 import React from 'react';
 
-import {Typography} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import {BarChart} from '../charts/BarChart';
-
+import BarChart from '../charts/BarChart';
+import { BarChartData } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': 'calc(50% - 1px)',
-    'height': '100vh',
-    'minWidth': '500px',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'justifyContent': 'center',
-    'alignItems': 'center',
-    'borderRight': `1px solid ${theme.palette.divider}`,
-    'position': 'relative',
+    width: 'calc(50% - 1px)',
+    height: '100vh',
+    minWidth: '500px',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    position: 'relative',
     '& .header': {
       width: 'calc(100% - 20px)',
       height: '64px',
@@ -29,12 +29,12 @@ const useStyles = makeStyles((theme) => ({
       top: 0,
     },
     '& .contents': {
-      'width': '100%',
-      'height': 'calc(100% - 64px)',
-      'display': 'flex',
-      'flexFlow': 'column nowrap',
-      'justifyContent': 'center',
-      'alignItems': 'center',
+      width: '100%',
+      height: 'calc(100% - 64px)',
+      display: 'flex',
+      flexFlow: 'column nowrap',
+      justifyContent: 'center',
+      alignItems: 'center',
       '& .stats': {
         textTransform: 'uppercase',
         color: theme.palette.text.primary,
@@ -43,21 +43,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-const calcTotalBalance = (balances: any[]) => {
+const calcTotalBalance = (balances: number[]) => {
   let sum = 0;
   for (let i = 0; i < balances.length; i++) {
-    sum += parseFloat(balances[i]);
+    sum += balances[i];
   }
   return sum.toFixed(2);
 };
 
-
 interface IProps {
-  chartData: any;
-};
+  chartData: BarChartData;
+}
 
-const AccountStatistics = ({chartData}: IProps) => {
+const AccountStatistics = ({ chartData }: IProps) => {
   const classes = useStyles();
   const balances = chartData.datasets[0].data;
 
@@ -69,23 +67,12 @@ const AccountStatistics = ({chartData}: IProps) => {
         </Typography>
       </div>
       <div className="contents">
-        <BarChart
-          width='auto'
-          height='auto'
-          data={chartData}
-        />
+        <BarChart width="auto" height="auto" data={chartData} />
         <div className="stats">
-          <Typography
-            variant="overline"
-            color="textSecondary"
-            align="center"
-          >
-            {'Total balance'}
+          <Typography variant="overline" color="textSecondary" align="center">
+            Total balance
           </Typography>
-          <Typography
-            variant="body1"
-            align="center"
-          >
+          <Typography variant="body1" align="center">
             {calcTotalBalance(balances)}
           </Typography>
         </div>
@@ -97,7 +84,10 @@ const AccountStatistics = ({chartData}: IProps) => {
 AccountStatistics.propTypes = {
   /** The data to be displayed in the chart
    * (refer to utils/graphUtils.js) */
-  chartData: PropTypes.object.isRequired,
+  chartData: PropTypes.shape({
+    datasets: PropTypes.arrayOf(PropTypes.object),
+    labels: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
 };
 
-export {AccountStatistics};
+export default AccountStatistics;

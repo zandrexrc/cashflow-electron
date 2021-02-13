@@ -25,5 +25,5 @@ export {
   cashflowWhite,
   loadingLight,
   loadingDark,
-  onboardingImages
+  onboardingImages,
 };

@@ -8,22 +8,20 @@ import {
   Select,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {ReduxState} from '../../types';
-
+import { ReduxState } from '../../types';
 
 interface IProps {
   selectedAccount: null | string;
   setAccount: (id: string) => void;
-  enableSelectAll: undefined | null | boolean;
-};
-
+  enableSelectAll: boolean | undefined;
+}
 
 const AccountSelector = ({
   selectedAccount,
   setAccount,
-  enableSelectAll
+  enableSelectAll,
 }: IProps) => {
   const accounts = useSelector((state: ReduxState) => state.accounts);
 
@@ -39,29 +37,23 @@ const AccountSelector = ({
   return (
     <FormControl
       error={error.length > 0 && !enableSelectAll}
-      style={{minWidth: '40%'}}
+      style={{ minWidth: '40%' }}
     >
       <InputLabel id="account-filter-label">Account</InputLabel>
       <Select
         labelId="account-filter-label"
         id="account-filter"
         value={selectedAccount}
-        onChange={(event) => setAccount('' + event.target.value)}
+        onChange={(event) => setAccount(`${event.target.value}`)}
       >
-        {
-          enableSelectAll &&
-          <MenuItem value={'All'}>All</MenuItem>
-        }
-        {accounts.map((obj, index) => (
-          <MenuItem key={index} value={obj.accountId.toString()}>
+        {enableSelectAll && <MenuItem value="All">All</MenuItem>}
+        {accounts.map((obj) => (
+          <MenuItem key={obj.accountId} value={obj.accountId.toString()}>
             {obj.name}
           </MenuItem>
         ))}
       </Select>
-      {
-        error && !enableSelectAll &&
-        <FormHelperText>{error}</FormHelperText>
-      }
+      {error && !enableSelectAll && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   );
 };
@@ -75,4 +67,9 @@ AccountSelector.propTypes = {
   enableSelectAll: PropTypes.bool,
 };
 
-export {AccountSelector};
+AccountSelector.defaultProps = {
+  selectedAccount: null,
+  enableSelectAll: false,
+};
+
+export default AccountSelector;

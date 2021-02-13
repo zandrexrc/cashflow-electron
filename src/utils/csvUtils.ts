@@ -1,8 +1,12 @@
 import papa from 'papaparse';
 
-import {getAccountNames, getAccountIds, validateAccount} from './accountUtils';
-import {validateSubscription} from './subscriptionUtils';
-import {validateTransaction} from './transactionUtils';
+import {
+  getAccountNames,
+  getAccountIds,
+  validateAccount,
+} from './accountUtils';
+import { validateSubscription } from './subscriptionUtils';
+import { validateTransaction } from './transactionUtils';
 import {
   Account,
   Subscription,
@@ -10,20 +14,22 @@ import {
   NewAccount,
   NewSubscription,
   NewTransaction,
+  CsvSubscription,
+  CsvTransaction,
 } from '../types';
-
 
 /**
  * Generates a csv file from an array of objects.
  * @param {Array<Transaction|Subscription|Account>} data: an array of objects
  * @return {string}: a csv file
  */
-function generateSampleCsv(data: object[]) {
+function generateSampleCsv(
+  data: NewAccount[] | CsvSubscription[] | CsvTransaction[]
+) {
   const csv = papa.unparse(data);
   const blob = new Blob([csv]);
   return URL.createObjectURL(blob);
 }
-
 
 /**
  * Exports a csv string into a file
@@ -45,7 +51,6 @@ function exportCsv(csv: string, title: string) {
   document.body.removeChild(a);
 }
 
-
 /**
  * Processes a list of accounts into a CSV string.
  * @param {Array<Account>} accounts: a list of account objects
@@ -65,7 +70,6 @@ function accountsToCsv(accounts: Account[]) {
   const csv = papa.unparse(preProcessedAccounts);
   exportCsv(csv, 'accounts.csv');
 }
-
 
 /**
  * Processes a list of subscriptions into a CSV string.
@@ -92,7 +96,6 @@ function subscriptionsToCsv(subscriptions: Subscription[]) {
   exportCsv(csv, 'subscriptions.csv');
 }
 
-
 /**
  * Processes a list of transactions into a CSV string.
  * @param {Array<Transaction>} transactions: a list of transaction objects
@@ -117,13 +120,15 @@ function transactionsToCsv(transactions: Transaction[]) {
   exportCsv(csv, 'transactions.csv');
 }
 
-
 /**
  * Parses account objects from a csv file.
  * @param {File} csv: the csv file to parse
  * @param {function} submitData: callback function for submitting parsed data
  */
-function csvToAccounts(csv: File, submitData: (error: string, accounts: NewAccount[]) => void) {
+function csvToAccounts(
+  csv: File,
+  submitData: (error: string, accounts: NewAccount[]) => void
+) {
   const accountIds = getAccountIds();
 
   // Parse file
@@ -135,9 +140,9 @@ function csvToAccounts(csv: File, submitData: (error: string, accounts: NewAccou
     dynamicTyping: true,
     skipEmptyLines: true,
     worker: true,
-    step: function(result, parser) {
+    step(result, parser) {
       rowCount += 1;
-      const account = result.data as any;
+      const account = (result.data as unknown) as NewAccount;
 
       // Abort early if there are parsing errors
       if (result.errors.length > 0) {
@@ -160,25 +165,26 @@ function csvToAccounts(csv: File, submitData: (error: string, accounts: NewAccou
       } else {
         error = 'Invalid account details.';
         parser.abort();
-        return;
       }
     },
-    complete: function() {
-      const fullErrorMessage = error ?
-        `An error occured while parsing the file. (Row ${rowCount}: ${error})` :
-        '';
+    complete() {
+      const fullErrorMessage = error
+        ? `An error occured while parsing the file. (Row ${rowCount}: ${error})`
+        : '';
       submitData(fullErrorMessage, parsedAccounts);
     },
   });
 }
-
 
 /**
  * Parses subscription objects from a csv file.
  * @param {File} csv: the csv file to parse
  * @param {function} submitData: callback function for submitting parsed data
  */
-function csvToSubscriptions(csv: File, submitData: (error: string, subscriptions: NewSubscription[]) => void) {
+function csvToSubscriptions(
+  csv: File,
+  submitData: (error: string, subscriptions: NewSubscription[]) => void
+) {
   const accountIds = getAccountIds();
 
   // Parse file
@@ -190,9 +196,9 @@ function csvToSubscriptions(csv: File, submitData: (error: string, subscriptions
     dynamicTyping: true,
     skipEmptyLines: true,
     worker: true,
-    step: function(result, parser) {
+    step(result, parser) {
       rowCount += 1;
-      const subscription = result.data as any;
+      const subscription = (result.data as unknown) as CsvSubscription;
 
       // Abort early if there are parsing errors
       if (result.errors.length > 0) {
@@ -202,7 +208,7 @@ function csvToSubscriptions(csv: File, submitData: (error: string, subscriptions
       }
 
       // Validate data
-      if (accountIds[subscription.account]) {
+      if (subscription.account && accountIds[subscription.account]) {
         subscription.accountId = accountIds[subscription.account];
       } else {
         error = 'Invalid account name.';
@@ -217,25 +223,26 @@ function csvToSubscriptions(csv: File, submitData: (error: string, subscriptions
       } else {
         error = 'Invalid subscription details.';
         parser.abort();
-        return;
       }
     },
-    complete: function() {
-      const fullErrorMessage = error ?
-        `An error occured while parsing the file. (Row ${rowCount}: ${error})` :
-        '';
+    complete() {
+      const fullErrorMessage = error
+        ? `An error occured while parsing the file. (Row ${rowCount}: ${error})`
+        : '';
       submitData(fullErrorMessage, parsedSubscriptions);
     },
   });
 }
-
 
 /**
  * Parses transaction objects from a csv file.
  * @param {File} csv: the csv file to parse
  * @param {function} submitData: callback function for submitting parsed data
  */
-function csvToTransactions(csv: File, submitData: (error: string, transactions: NewTransaction[]) => void) {
+function csvToTransactions(
+  csv: File,
+  submitData: (error: string, transactions: NewTransaction[]) => void
+) {
   const accountIds = getAccountIds();
 
   // Parse file
@@ -247,9 +254,9 @@ function csvToTransactions(csv: File, submitData: (error: string, transactions: 
     dynamicTyping: true,
     skipEmptyLines: true,
     worker: true,
-    step: function(result, parser) {
+    step(result, parser) {
       rowCount += 1;
-      const transaction = result.data as any;
+      const transaction = (result.data as unknown) as CsvTransaction;
 
       // Abort early if there are parsing errors
       if (result.errors.length > 0) {
@@ -274,18 +281,16 @@ function csvToTransactions(csv: File, submitData: (error: string, transactions: 
       } else {
         error = 'Invalid transaction details.';
         parser.abort();
-        return;
       }
     },
-    complete: function() {
-      const fullErrorMessage = error ?
-        `An error occured while parsing the file. (Row ${rowCount}: ${error})` :
-        '';
+    complete() {
+      const fullErrorMessage = error
+        ? `An error occured while parsing the file. (Row ${rowCount}: ${error})`
+        : '';
       submitData(fullErrorMessage, parsedTransactions);
     },
   });
 }
-
 
 export {
   generateSampleCsv,

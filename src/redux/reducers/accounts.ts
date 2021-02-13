@@ -6,13 +6,12 @@ import {
   UPDATE_ACCOUNT_BALANCE,
   ADD_MULTIPLE_ACCOUNTS,
 } from '../../constants';
-import {Account, ReduxAction} from '../../types';
-
+import { Account, ReduxAction } from '../../types';
 
 const editAccount = (items: Account[], newItem: Account) => {
   const updatedItems = [...items];
   const index = updatedItems.findIndex(
-      (a) => a.accountId === newItem.accountId,
+    (a) => a.accountId === newItem.accountId
   );
   updatedItems[index] = newItem;
   return updatedItems;
@@ -27,7 +26,7 @@ const updateBalance = (items: Account[], id: number, amount: number) => {
   return null;
 };
 
-export const accounts = (state: Account[] = [], action: ReduxAction) => {
+const accounts = (state: Account[] = [], action: ReduxAction) => {
   switch (action.type) {
     case GET_ACCOUNTS:
       return action.payload;
@@ -45,3 +44,5 @@ export const accounts = (state: Account[] = [], action: ReduxAction) => {
       return state;
   }
 };
+
+export default accounts;

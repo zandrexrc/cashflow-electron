@@ -1,11 +1,11 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import {accounts} from './accounts';
-import {settings} from './settings';
-import {subscriptions} from './subscriptions';
-import {transactions} from './transactions';
-import {activePage, isFetching, error, dataIsLoaded, toastState} from './ui';
-import {ReduxState} from '../../types';
+import accounts from './accounts';
+import settings from './settings';
+import subscriptions from './subscriptions';
+import transactions from './transactions';
+import { activePage, isFetching, error, dataIsLoaded, toastState } from './ui';
+import { ReduxState } from '../../types';
 
 const rootReducer = combineReducers({
   activePage,
@@ -39,4 +39,4 @@ const initialState: ReduxState = {
   transactions: [],
 };
 
-export {rootReducer, initialState};
+export { rootReducer, initialState };

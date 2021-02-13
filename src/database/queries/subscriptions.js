@@ -7,7 +7,7 @@ export const getSubscriptions = async () => {
       const stmt = `SELECT subscriptionId, name, firstBillingDate,
                     cycle, accountId, category, amount
                     FROM subscriptions`;
-      result = await db.all(stmt, function(err) {
+      result = await db.all(stmt, (err) => {
         if (err) {
           throw err;
         }
@@ -16,10 +16,9 @@ export const getSubscriptions = async () => {
   } catch (err) {
     result = {
       error: 'Failed to retrieve all subscriptions',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const addSubscription = async (newSubscription) => {
@@ -38,7 +37,7 @@ export const addSubscription = async (newSubscription) => {
         newSubscription.amount,
       ];
 
-      const qRes = await db.run(stmt, params, function(err) {
+      const qRes = await db.run(stmt, params, (err) => {
         if (err) {
           throw err;
         }
@@ -51,10 +50,9 @@ export const addSubscription = async (newSubscription) => {
   } catch (err) {
     result = {
       error: 'Failed to create a new subscription',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const editSubscription = async (subscription) => {
@@ -75,7 +73,7 @@ export const editSubscription = async (subscription) => {
         subscription.subscriptionId,
       ];
 
-      await db.run(stmt, params, function(err) {
+      await db.run(stmt, params, (err) => {
         if (err) {
           throw err;
         }
@@ -85,10 +83,9 @@ export const editSubscription = async (subscription) => {
   } catch (err) {
     result = {
       error: 'Failed to edit the subscription',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const deleteSubscription = async (id) => {
@@ -97,9 +94,9 @@ export const deleteSubscription = async (id) => {
     await connection.query(async (db) => {
       const stmt = `DELETE FROM subscriptions WHERE subscriptionId = ?`;
 
-      await db.run(stmt, [id], function(err) {
+      await db.run(stmt, [id], (err) => {
         if (err) {
-          throw (err);
+          throw err;
         }
       });
       result = {
@@ -110,50 +107,31 @@ export const deleteSubscription = async (id) => {
   } catch (err) {
     result = {
       error: 'Failed to delete the subscription.',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
-export const addMultipleSubscriptions = async (newSubscription) => {
+export const addMultipleSubscriptions = async (newSubscriptions) => {
   let result;
   try {
-    await connection.query(async (db) => {
-      const query = `INSERT INTO subscriptions (name, firstBillingDate,
-                      cycle, accountId, category, amount)
-                      VALUES (?, ?, ?, ?, ?, ?)`;
-      const stmt = await db.prepare(query);
+    const promises = [];
+    for (let i = 0; i < newSubscriptions.length; i++) {
+      const subscription = newSubscriptions[i];
+      promises.push(addSubscription(subscription));
+    }
 
-      const addedSubscriptions = [];
-      for (let i = 0; i < newSubscription.length; i++) {
-        const subscription = newSubscription[i];
-        const params = [
-          subscription.name,
-          subscription.firstBillingDate,
-          subscription.cycle,
-          subscription.accountId,
-          subscription.category,
-          subscription.amount,
-        ];
-        const qRes = await stmt.run(params, function(err) {
-          if (err) {
-            throw err;
-          }
-        });
-        addedSubscriptions.push({
-          subscriptionId: qRes.lastID,
-          ...subscription,
-        });
+    const addedSubscriptions = await Promise.all(promises);
+    for (let j = 0; j < addedSubscriptions.length; j++) {
+      if (addedSubscriptions[j].error) {
+        throw new Error(addedSubscriptions[j].error);
       }
-      await stmt.finalize();
-      result = addedSubscriptions;
-    });
+    }
+    result = addedSubscriptions;
   } catch (err) {
     result = {
       error: 'Failed to create multiple subscriptions',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };

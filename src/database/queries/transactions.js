@@ -7,7 +7,7 @@ export const getTransactions = async () => {
       const stmt = `SELECT transactionId, date, description,
                     accountId, category, amount
                     FROM transactions`;
-      result = await db.all(stmt, function(err) {
+      result = await db.all(stmt, (err) => {
         if (err) {
           throw err;
         }
@@ -16,10 +16,9 @@ export const getTransactions = async () => {
   } catch (err) {
     result = {
       error: 'Failed to retrieve all transactions',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const addTransaction = async (newTransaction) => {
@@ -37,7 +36,7 @@ export const addTransaction = async (newTransaction) => {
         newTransaction.amount,
       ];
 
-      const qRes = await db.run(stmt, params, function(err) {
+      const qRes = await db.run(stmt, params, (err) => {
         if (err) {
           throw err;
         }
@@ -50,10 +49,9 @@ export const addTransaction = async (newTransaction) => {
   } catch (err) {
     result = {
       error: 'Failed to create a new transaction',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const editTransaction = async (transaction) => {
@@ -73,7 +71,7 @@ export const editTransaction = async (transaction) => {
         transaction.transactionId,
       ];
 
-      await db.run(stmt, params, function(err) {
+      await db.run(stmt, params, (err) => {
         if (err) {
           throw err;
         }
@@ -83,10 +81,9 @@ export const editTransaction = async (transaction) => {
   } catch (err) {
     result = {
       error: 'Failed to edit the transaction',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const deleteTransaction = async (id) => {
@@ -95,9 +92,9 @@ export const deleteTransaction = async (id) => {
     await connection.query(async (db) => {
       const stmt = `DELETE FROM transactions WHERE transactionId = ?`;
 
-      await db.run(stmt, [id], function(err) {
+      await db.run(stmt, [id], (err) => {
         if (err) {
-          throw (err);
+          throw err;
         }
       });
       result = {
@@ -108,49 +105,31 @@ export const deleteTransaction = async (id) => {
   } catch (err) {
     result = {
       error: 'Failed to delete the transaction.',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
-export const addMultipleTransactions = async (newTransaction) => {
+export const addMultipleTransactions = async (newTransactions) => {
   let result;
   try {
-    await connection.query(async (db) => {
-      const query = `INSERT INTO transactions (date, description,
-                      accountId, category, amount)
-                      VALUES (?, ?, ?, ?, ?)`;
-      const stmt = await db.prepare(query);
+    const promises = [];
+    for (let i = 0; i < newTransactions.length; i++) {
+      const transaction = newTransactions[i];
+      promises.push(addTransaction(transaction));
+    }
 
-      const addedTransactions = [];
-      for (let i = 0; i < newTransaction.length; i++) {
-        const transaction = newTransaction[i];
-        const params = [
-          transaction.date,
-          transaction.description,
-          transaction.accountId,
-          transaction.category,
-          transaction.amount,
-        ];
-        const qRes = await stmt.run(params, function(err) {
-          if (err) {
-            throw err;
-          }
-        });
-        addedTransactions.push({
-          transactionId: qRes.lastID,
-          ...transaction,
-        });
+    const addedTransactions = await Promise.all(promises);
+    for (let j = 0; j < addedTransactions.length; j++) {
+      if (addedTransactions[j].error) {
+        throw new Error(addedTransactions[j].error);
       }
-      await stmt.finalize();
-      result = addedTransactions;
-    });
+    }
+    result = addedTransactions;
   } catch (err) {
     result = {
       error: 'Failed to create multiple transactions',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };

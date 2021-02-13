@@ -1,17 +1,15 @@
 import React from 'react';
 
-import {Snackbar} from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
-import {useDispatch, useSelector} from 'react-redux';
+import { Snackbar } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {hideToast} from '../../redux/actions/ui';
-import {ReduxState} from '../../types';
+import { hideToast } from '../../redux/actions/ui';
+import { ReduxState } from '../../types';
 
-
-const Alert = (props: any) => {
+const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={10} variant="filled" {...props} />;
 };
-
 
 const Toast = () => {
   const dispatch = useDispatch();
@@ -36,4 +34,4 @@ const Toast = () => {
   );
 };
 
-export {Toast};
+export default Toast;

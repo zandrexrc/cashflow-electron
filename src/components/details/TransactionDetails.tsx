@@ -1,27 +1,26 @@
 import React from 'react';
 
-import {IconButton, Paper, Slide, Typography} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { IconButton, Paper, Slide, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import PropTypes from 'prop-types';
 
-import {getAccountName, printDate} from '../../utils';
-import {Transaction} from '../../types';
-
+import { getAccountName, printDate } from '../../utils';
+import { Transaction } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': '50%',
-    'height': '100vh',
-    'minWidth': '500px',
-    'maxHeight': '100vh',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'position': 'absolute',
-    'right': '0',
-    'overflow': 'auto',
+    width: '50%',
+    height: '100vh',
+    minWidth: '500px',
+    maxHeight: '100vh',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    position: 'absolute',
+    right: '0',
+    overflow: 'auto',
     '& .header': {
       width: 'calc(100% - 30px)',
       height: '64px',
@@ -32,12 +31,12 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '& .details': {
-      'width': 'calc(100% - 80px)',
-      'height': 'calc(100% - 64px)',
-      'display': 'flex',
-      'flexFlow': 'column nowrap',
-      'alignItems': 'flex-start',
-      'margin': '0 auto',
+      width: 'calc(100% - 80px)',
+      height: 'calc(100% - 64px)',
+      display: 'flex',
+      flexFlow: 'column nowrap',
+      alignItems: 'flex-start',
+      margin: '0 auto',
       '& .pos': {
         color: theme.palette.success.main,
       },
@@ -73,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IProps {
   close: () => void;
   currency: string;
@@ -82,8 +80,7 @@ interface IProps {
   isOpen: boolean;
   openFormTab: () => void;
   transaction: Transaction | null | undefined;
-};
-
+}
 
 const TransactionDetails = ({
   close,
@@ -107,32 +104,25 @@ const TransactionDetails = ({
             <IconButton onClick={openFormTab}>
               <EditIcon />
             </IconButton>
-            <IconButton
-              onClick={deleteItem}
-            >
+            <IconButton onClick={deleteItem}>
               <DeleteIcon />
             </IconButton>
           </div>
         </div>
-        {
-          transaction &&
+        {transaction && (
           <div className="details">
             <Typography variant="body1" align="right" color="textSecondary">
               {printDate(transaction.date, dateFormat)}
             </Typography>
-            <Typography variant="h5">
-              {transaction.description}
-            </Typography>
+            <Typography variant="h5">{transaction.description}</Typography>
             <Typography
               variant="h3"
               className={transaction.amount < 0 ? 'neg' : 'pos'}
             >
-              {
-                transaction.amount < 0 ?
-                `- ${currency}
-                  ${Math.abs(transaction.amount).toFixed(2)}` :
-                `${currency} ${transaction.amount.toFixed(2)}`
-              }
+              {transaction.amount < 0
+                ? `- ${currency}
+                  ${Math.abs(transaction.amount).toFixed(2)}`
+                : `${currency} ${transaction.amount.toFixed(2)}`}
             </Typography>
             <div className="tags">
               <div className="tag">
@@ -140,11 +130,9 @@ const TransactionDetails = ({
                   Category
                 </Typography>
                 <Typography variant="h6">
-                  {
-                    transaction.category ?
-                    transaction.category :
-                    'Uncategorized'
-                  }
+                  {transaction.category
+                    ? transaction.category
+                    : 'Uncategorized'}
                 </Typography>
               </div>
               <div className="tag">
@@ -157,7 +145,7 @@ const TransactionDetails = ({
               </div>
             </div>
           </div>
-        }
+        )}
       </Paper>
     </Slide>
   );
@@ -177,7 +165,18 @@ TransactionDetails.propTypes = {
   /** Function to open the corresponding Form for editing the Transaction */
   openFormTab: PropTypes.func.isRequired,
   /** The Transasction to be displayed */
-  transaction: PropTypes.object,
+  transaction: PropTypes.shape({
+    transactionId: PropTypes.number,
+    date: PropTypes.string,
+    description: PropTypes.string,
+    category: PropTypes.string,
+    amount: PropTypes.number,
+    accountId: PropTypes.number,
+  }),
 };
 
-export {TransactionDetails};
+TransactionDetails.defaultProps = {
+  transaction: null,
+};
+
+export default TransactionDetails;

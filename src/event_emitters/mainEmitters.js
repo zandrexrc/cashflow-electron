@@ -2,7 +2,7 @@ const { ipcMain } = require('electron');
 const queries = require('../database/queries');
 
 // ACCOUNTS
-ipcMain.on('GET_ACCOUNTS', async (event, arg) => {
+ipcMain.on('GET_ACCOUNTS', async (event) => {
   const result = await queries.accounts.getAccounts();
   event.reply('FETCH_REPLY', result);
 });
@@ -27,9 +27,8 @@ ipcMain.on('ADD_MULTIPLE_ACCOUNTS', async (event, arg) => {
   event.reply('FETCH_REPLY', result);
 });
 
-
 // SUBSCRIPTIONS
-ipcMain.on('GET_SUBSCRIPTIONS', async (event, arg) => {
+ipcMain.on('GET_SUBSCRIPTIONS', async (event) => {
   const result = await queries.subscriptions.getSubscriptions();
   event.reply('FETCH_REPLY', result);
 });
@@ -54,9 +53,8 @@ ipcMain.on('ADD_MULTIPLE_SUBSCRIPTIONS', async (event, arg) => {
   event.reply('FETCH_REPLY', result);
 });
 
-
 // TRANSACTIONS
-ipcMain.on('GET_TRANSACTIONS', async (event, arg) => {
+ipcMain.on('GET_TRANSACTIONS', async (event) => {
   const result = await queries.transactions.getTransactions();
   event.reply('FETCH_REPLY', result);
 });
@@ -81,9 +79,8 @@ ipcMain.on('ADD_MULTIPLE_TRANSACTIONS', async (event, arg) => {
   event.reply('FETCH_REPLY', result);
 });
 
-
 // SETTINGS
-ipcMain.on('GET_SETTINGS', async (event, arg) => {
+ipcMain.on('GET_SETTINGS', async (event) => {
   const result = await queries.settings.getSettings();
   event.reply('FETCH_REPLY', result);
 });

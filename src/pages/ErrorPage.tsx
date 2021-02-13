@@ -1,9 +1,9 @@
 import React from 'react';
 
-import {Link, Typography} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { Button, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
@@ -18,9 +18,9 @@ const useStyles = makeStyles({
 
 interface IProps {
   error: string | null | undefined;
-};
+}
 
-const ErrorPage = ({error}: IProps) => {
+const ErrorPage = ({ error }: IProps) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -34,9 +34,9 @@ const ErrorPage = ({error}: IProps) => {
       <Typography variant="h5" color="textPrimary">
         {error}
       </Typography>
-      <Typography variant="body1" color="textSecondary">
-        <Link href="#" onClick={reloadPage}>Click here to refresh the page.</Link>
-      </Typography>
+      <Button color="primary" onClick={reloadPage}>
+        Click here to refresh the page.
+      </Button>
     </div>
   );
 };
@@ -46,4 +46,8 @@ ErrorPage.propTypes = {
   error: PropTypes.string,
 };
 
-export {ErrorPage};
+ErrorPage.defaultProps = {
+  error: null,
+};
+
+export default ErrorPage;

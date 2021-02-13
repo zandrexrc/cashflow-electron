@@ -1,8 +1,7 @@
-import {GET_SETTINGS, EDIT_SETTINGS, InitialSettings} from '../../constants';
-import {Settings, ReduxAction} from '../../types';
+import { GET_SETTINGS, EDIT_SETTINGS, InitialSettings } from '../../constants';
+import { Settings, ReduxAction } from '../../types';
 
-
-export const settings = (state: Settings = InitialSettings, action: ReduxAction) => {
+const settings = (state: Settings = InitialSettings, action: ReduxAction) => {
   switch (action.type) {
     case GET_SETTINGS:
       return action.payload;
@@ -12,3 +11,5 @@ export const settings = (state: Settings = InitialSettings, action: ReduxAction)
       return state;
   }
 };
+
+export default settings;

@@ -8,26 +8,25 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import MoreVert from '@material-ui/icons/MoreVert';
 import PublishIcon from '@material-ui/icons/Publish';
 import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
-import {FixedSizeList} from 'react-window';
+import { FixedSizeList } from 'react-window';
 
-import {Account} from '../../types';
-
+import { Account } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': 'calc(50% - 1px)',
-    'height': '100vh',
-    'minWidth': '500px',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'backgroundColor': theme.palette.background.paper,
+    width: 'calc(50% - 1px)',
+    height: '100vh',
+    minWidth: '500px',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    backgroundColor: theme.palette.background.paper,
     '& .header': {
       width: 'calc(100% - 30px)',
       height: '64px',
@@ -68,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
     '& .listItem:hover': {
       backgroundColor: theme.palette.action.hover,
     },
+    '& .listItem:focus': {
+      outline: 'none',
+      backgroundColor: theme.palette.action.focus,
+    },
     '& .listItemDate': {
       display: 'flex',
       flexFlow: 'column nowrap',
@@ -93,16 +96,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IRowProps {
   data: {
-    items: Account[],
-    currency: string,
-    openDetailsTab: (a: Account) => void,
+    items: Account[];
+    currency: string;
+    openDetailsTab: (a: Account) => void;
   };
   index: number;
-  style: any;
-};
+  style: React.CSSProperties;
+}
 
 interface IListProps {
   currency: string;
@@ -113,8 +115,7 @@ interface IListProps {
   openImportFileDialog: () => void;
 }
 
-
-const renderRow = ({data, index, style}: IRowProps) => {
+const renderRow = ({ data, index, style }: IRowProps) => {
   const account = data.items[index];
 
   return (
@@ -122,12 +123,16 @@ const renderRow = ({data, index, style}: IRowProps) => {
       className="listItem"
       key={index}
       style={style}
+      role="button"
+      tabIndex={0}
+      onKeyPress={(event) => {
+        if (event.key === 'Enter') {
+          data.openDetailsTab(account);
+        }
+      }}
       onClick={() => data.openDetailsTab(account)}
     >
-      <Typography
-        className="listItemText"
-        variant="body1"
-      >
+      <Typography className="listItemText" variant="body1">
         {account.name}
       </Typography>
       <Typography
@@ -135,16 +140,13 @@ const renderRow = ({data, index, style}: IRowProps) => {
         variant="body1"
         align="right"
       >
-        {
-          account.balance < 0 ?
-          `- ${data.currency} ${Math.abs(account.balance).toFixed(2)}` :
-          `${data.currency} ${account.balance.toFixed(2)}`
-        }
+        {account.balance < 0
+          ? `- ${data.currency} ${Math.abs(account.balance).toFixed(2)}`
+          : `${data.currency} ${account.balance.toFixed(2)}`}
       </Typography>
     </div>
   );
 };
-
 
 const AccountList = ({
   currency,
@@ -165,24 +167,22 @@ const AccountList = ({
 
   const search = (term: string) => {
     const filter = new RegExp(term, 'i');
-    setDisplayedItems(items.filter((item: Account) =>
-      item.name && filter.test(item.name)
-    ));
+    setDisplayedItems(
+      items.filter((item: Account) => item.name && filter.test(item.name))
+    );
   };
 
   // Dropdown menu
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<Element | null>(null);
 
-  const showMenu = (event: any) =>
+  const showMenu = (event: React.MouseEvent) =>
     setMenuAnchorEl(event.currentTarget);
 
-  const hideMenu = () =>
-    setMenuAnchorEl(null);
+  const hideMenu = () => setMenuAnchorEl(null);
 
   return (
     <div className={classes.root}>
-      {
-        openFormTab &&
+      {openFormTab && (
         <div className="header">
           <TextField
             type="search"
@@ -212,38 +212,38 @@ const AccountList = ({
             >
               <MenuItem onClick={openImportFileDialog}>
                 <PublishIcon fontSize="small" />
-                <span style={{marginLeft: '10px'}}>Import from CSV</span>
+                <span style={{ marginLeft: '10px' }}>Import from CSV</span>
               </MenuItem>
               <MenuItem onClick={exportData}>
                 <GetAppIcon fontSize="small" />
-                <span style={{marginLeft: '10px'}}>Download as CSV</span>
+                <span style={{ marginLeft: '10px' }}>Download as CSV</span>
               </MenuItem>
             </Menu>
           </div>
         </div>
-      }
-      {
-        displayedItems.length === 0 ?
+      )}
+      {displayedItems.length === 0 ? (
         <div className="emptyList">
           <Typography variant="h6" color="textSecondary">
             No records to display.
           </Typography>
-        </div> :
+        </div>
+      ) : (
         <FixedSizeList
           className="list"
           height={window.innerHeight - 64}
-          width='100%'
+          width="100%"
           itemSize={70}
           itemCount={displayedItems.length}
           itemData={{
             items: displayedItems,
-            currency: currency,
-            openDetailsTab: openDetailsTab,
+            currency,
+            openDetailsTab,
           }}
         >
           {renderRow}
         </FixedSizeList>
-      }
+      )}
     </div>
   );
 };
@@ -252,15 +252,15 @@ AccountList.propTypes = {
   /** The currency symbol */
   currency: PropTypes.string.isRequired,
   /** Function to export the list into a CSV file */
-  exportData: PropTypes.func,
+  exportData: PropTypes.func.isRequired,
   /** An array of Accounts|Subscriptions|Transactions */
-  items: PropTypes.array.isRequired,
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
   /** Function to open the Details component for the selected item */
-  openDetailsTab: PropTypes.func,
+  openDetailsTab: PropTypes.func.isRequired,
   /** Function to open the Form component */
-  openFormTab: PropTypes.func,
+  openFormTab: PropTypes.func.isRequired,
   /** Function to open the component for uploading a file */
-  openImportFileDialog: PropTypes.func,
+  openImportFileDialog: PropTypes.func.isRequired,
 };
 
-export {AccountList};
+export default AccountList;

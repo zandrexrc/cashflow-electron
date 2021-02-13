@@ -6,19 +6,18 @@ import {
   DELETE_TRANSACTIONS_IN_ACCOUNT,
   ADD_MULTIPLE_TRANSACTIONS,
 } from '../../constants';
-import {Transaction, ReduxAction} from '../../types';
-
+import { Transaction, ReduxAction } from '../../types';
 
 const editTransaction = (items: Transaction[], newItem: Transaction) => {
   const updatedItems = [...items];
   const index = updatedItems.findIndex(
-      (t) => t.transactionId === newItem.transactionId,
+    (t) => t.transactionId === newItem.transactionId
   );
   updatedItems[index] = newItem;
   return updatedItems;
 };
 
-export const transactions = (state: Transaction[] = [], action: ReduxAction) => {
+const transactions = (state: Transaction[] = [], action: ReduxAction) => {
   switch (action.type) {
     case GET_TRANSACTIONS:
       return action.payload;
@@ -36,3 +35,5 @@ export const transactions = (state: Transaction[] = [], action: ReduxAction) => 
       return state;
   }
 };
+
+export default transactions;

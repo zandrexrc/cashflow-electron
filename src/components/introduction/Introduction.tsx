@@ -1,14 +1,13 @@
 import React from 'react';
 
-import {makeStyles} from '@material-ui/core/styles';
-import {useSelector} from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
 
-import {AccountForm} from './AccountForm';
-import {Offboarding} from './Offboarding';
-import {Onboarding} from './Onboarding';
-import {SettingsForm} from './SettingsForm';
-import {ReduxState} from '../../types';
-
+import AccountForm from './AccountForm';
+import Offboarding from './Offboarding';
+import Onboarding from './Onboarding';
+import SettingsForm from './SettingsForm';
+import { ReduxState } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
   },
 }));
-
 
 const Introduction = () => {
   const classes = useStyles();
@@ -28,37 +26,28 @@ const Introduction = () => {
 
   return (
     <div className={classes.root}>
-      {
-        activeIndex === 0 &&
-        <Onboarding next={() => setActiveIndex(1)} />
-      }
-      {
-        activeIndex === 1 &&
+      {activeIndex === 0 && <Onboarding next={() => setActiveIndex(1)} />}
+      {activeIndex === 1 && (
         <SettingsForm
           currency={currency}
           setCurrency={setCurrency}
           next={() => setActiveIndex(2)}
         />
-      }
-      {
-        activeIndex === 2 &&
-        <AccountForm
-          currency={currency}
-          next={() => setActiveIndex(3)}
-        />
-      }
-      {
-        activeIndex === 3 &&
+      )}
+      {activeIndex === 2 && (
+        <AccountForm currency={currency} next={() => setActiveIndex(3)} />
+      )}
+      {activeIndex === 3 && (
         <Offboarding
           settings={{
-            currency: currency,
+            currency,
             dateFormat: settings.dateFormat,
             appTheme: settings.appTheme,
           }}
         />
-      }
+      )}
     </div>
   );
 };
 
-export {Introduction};
+export default Introduction;

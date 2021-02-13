@@ -9,12 +9,12 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
-import {useDispatch, useSelector} from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {LineChart} from '../components/charts/LineChart';
-import {DATE_FORMAT_MONTH_YEAR} from '../constants';
-import {setActivePage} from '../redux/actions/ui';
+import LineChart from '../components/charts/LineChart';
+import { DATE_FORMAT_MONTH_YEAR } from '../constants';
+import { setActivePage } from '../redux/actions/ui';
 import {
   calcMonthlySubscriptions,
   calcMostUsedAccounts,
@@ -22,22 +22,20 @@ import {
   createActivityGraphData,
   printDate,
 } from '../utils';
-import {ReduxState} from '../types';
-
+import { ReduxState } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'flexGrow': 1,
-    'maxWidth': 'calc(100% - 40px)',
-    'padding': '15px 20px 20px 20px',
-    'backgroundColor': theme.palette.background.default,
+    flexGrow: 1,
+    maxWidth: 'calc(100% - 40px)',
+    padding: '15px 20px 20px 20px',
+    backgroundColor: theme.palette.background.default,
     '& .title': {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.primary.main,
     },
   },
 }));
-
 
 const Overview = () => {
   const classes = useStyles();
@@ -48,15 +46,16 @@ const Overview = () => {
   const accounts = useSelector((state: ReduxState) => state.accounts);
   const currency = useSelector((state: ReduxState) => state.settings.currency);
   let subscriptions = useSelector((state: ReduxState) => state.subscriptions);
-  subscriptions = subscriptions.filter((s) =>
-    s.cycle === 'monthly' ||
-      parseInt(s.firstBillingDate.substring(5, 7)) === today.getMonth()+1,
+  subscriptions = subscriptions.filter(
+    (s) =>
+      s.cycle === 'monthly' ||
+      parseInt(s.firstBillingDate.substring(5, 7), 10) === today.getMonth() + 1
   );
   let transactions = useSelector((state: ReduxState) => state.transactions);
   transactions = transactions.filter((t) => {
     return (
-      parseInt(t.date.substring(5, 7)) === today.getMonth()+1 &&
-        parseInt(t.date.substring(0, 4)) === today.getFullYear()
+      parseInt(t.date.substring(5, 7), 10) === today.getMonth() + 1 &&
+      parseInt(t.date.substring(0, 4), 10) === today.getFullYear()
     );
   });
 
@@ -65,7 +64,9 @@ const Overview = () => {
   const subscriptionsData = calcMonthlySubscriptions(subscriptions);
   const transactionsData = calcNetIncome(transactions);
   const activityData = createActivityGraphData(
-      transactions, today.getMonth(), today.getFullYear(),
+    transactions,
+    today.getMonth(),
+    today.getFullYear()
   );
 
   return (
@@ -76,9 +77,7 @@ const Overview = () => {
             {/* Title */}
             <Card className="title">
               <CardContent>
-                <Typography variant="h5">
-                  Monthly overview
-                </Typography>
+                <Typography variant="h5">Monthly overview</Typography>
                 <Typography variant="h2">
                   {printDate(today, DATE_FORMAT_MONTH_YEAR)}
                 </Typography>
@@ -97,26 +96,22 @@ const Overview = () => {
                   Accounts
                 </Typography>
                 <Divider />
-                {
-                  accountsData.length === 0 ?
-                  <Typography variant="h5">
-                      No records to display.
-                  </Typography> :
-                  accountsData.map((account, index) => (
-                    <div key={index}>
+                {accountsData.length === 0 ? (
+                  <Typography variant="h5">No records to display.</Typography>
+                ) : (
+                  accountsData.map((account) => (
+                    <div key={account?.accountId}>
                       <Typography color="textPrimary" variant="subtitle1">
                         {account ? account.name : ''}
                       </Typography>
                       <Typography variant="h5">
-                        {
-                          account ?
-                          `${currency} ${account.balance.toFixed(2)}` :
-                          ''
-                        }
+                        {account
+                          ? `${currency} ${account.balance.toFixed(2)}`
+                          : ''}
                       </Typography>
                     </div>
                   ))
-                }
+                )}
               </CardContent>
               <CardActions>
                 <Button
@@ -258,4 +253,4 @@ const Overview = () => {
   );
 };
 
-export {Overview};
+export default Overview;

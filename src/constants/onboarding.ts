@@ -1,4 +1,4 @@
-export const OnboardingSlides = [
+const OnboardingSlides = [
   {
     title: 'Welcome to Cashflow',
     description: `Take a quick tour of the various features of the app.`,
@@ -36,3 +36,5 @@ export const OnboardingSlides = [
       app theme to match your own preferences.`,
   },
 ];
+
+export default OnboardingSlides;

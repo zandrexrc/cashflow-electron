@@ -1,37 +1,39 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
-import {useTheme} from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import Chart from 'chart.js';
 import PropTypes from 'prop-types';
 
+import { LineChartData } from '../../types';
 
 interface IProps {
-  data: object;
+  data: LineChartData;
   height: string;
   width: string;
   xAxisLabel: string;
   yAxisLabel: string;
 }
 
-const LineChart = ({data, height, width, xAxisLabel, yAxisLabel}: IProps) => {
+const LineChart = ({ data, height, width, xAxisLabel, yAxisLabel }: IProps) => {
   const theme = useTheme();
 
-  useEffect(function (): () => void {
-      const ctx = document.getElementById('lineChart') as HTMLCanvasElement;
-      const lineChart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: {
-          responsive: true,
-          animation: {
-            duration: 0,
-          },
-          hover: {
-            animationDuration: 0,
-          },
-          responsiveAnimationDuration: 0,
-          scales: {
-            yAxes: [{
+  useEffect((): (() => void) => {
+    const ctx = document.getElementById('lineChart') as HTMLCanvasElement;
+    const lineChart = new Chart(ctx, {
+      type: 'line',
+      data,
+      options: {
+        responsive: true,
+        animation: {
+          duration: 0,
+        },
+        hover: {
+          animationDuration: 0,
+        },
+        responsiveAnimationDuration: 0,
+        scales: {
+          yAxes: [
+            {
               scaleLabel: {
                 display: true,
                 labelString: yAxisLabel,
@@ -43,8 +45,10 @@ const LineChart = ({data, height, width, xAxisLabel, yAxisLabel}: IProps) => {
               gridLines: {
                 color: theme.palette.action.focus,
               },
-            }],
-            xAxes: [{
+            },
+          ],
+          xAxes: [
+            {
               scaleLabel: {
                 display: true,
                 labelString: xAxisLabel,
@@ -56,32 +60,30 @@ const LineChart = ({data, height, width, xAxisLabel, yAxisLabel}: IProps) => {
               gridLines: {
                 color: theme.palette.action.focus,
               },
-            }],
-          },
-          legend: {
-            labels: {
-              fontColor: theme.palette.text.secondary,
             },
+          ],
+        },
+        legend: {
+          labels: {
+            fontColor: theme.palette.text.secondary,
           },
         },
-      });
-      lineChart.update();
-      return () => lineChart.destroy();
+      },
     });
+    lineChart.update();
+    return () => lineChart.destroy();
+  });
 
-  return (
-    <canvas
-      id="lineChart"
-      width={width}
-      height={height}
-    ></canvas>
-  );
+  return <canvas id="lineChart" width={width} height={height} />;
 };
 
 LineChart.propTypes = {
   /** The data to be displayed.
    * (refer to: https://www.chartjs.org/docs/latest/charts/line.html) */
-  data: PropTypes.object.isRequired,
+  data: PropTypes.shape({
+    datasets: PropTypes.arrayOf(PropTypes.object),
+    labels: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
   /** The height of the chart (pixel value or 'auto') */
   height: PropTypes.string.isRequired,
   /** The width of the chart (pixel value or 'auto') */
@@ -92,4 +94,4 @@ LineChart.propTypes = {
   yAxisLabel: PropTypes.string.isRequired,
 };
 
-export {LineChart};
+export default LineChart;

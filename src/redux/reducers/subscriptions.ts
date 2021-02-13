@@ -6,19 +6,18 @@ import {
   DELETE_SUBSCRIPTIONS_IN_ACCOUNT,
   ADD_MULTIPLE_SUBSCRIPTIONS,
 } from '../../constants';
-import {Subscription, ReduxAction} from '../../types';
-
+import { Subscription, ReduxAction } from '../../types';
 
 const editSubscription = (items: Subscription[], newItem: Subscription) => {
   const updatedItems = [...items];
   const index = updatedItems.findIndex(
-      (s) => s.subscriptionId === newItem.subscriptionId,
+    (s) => s.subscriptionId === newItem.subscriptionId
   );
   updatedItems[index] = newItem;
   return updatedItems;
 };
 
-export const subscriptions = (state: Subscription[] = [], action: ReduxAction) => {
+const subscriptions = (state: Subscription[] = [], action: ReduxAction) => {
   switch (action.type) {
     case GET_SUBSCRIPTIONS:
       return action.payload;
@@ -36,3 +35,5 @@ export const subscriptions = (state: Subscription[] = [], action: ReduxAction) =
       return state;
   }
 };
+
+export default subscriptions;

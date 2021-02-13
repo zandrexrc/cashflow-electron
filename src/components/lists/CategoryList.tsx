@@ -1,22 +1,21 @@
 import React from 'react';
 
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {FixedSizeList} from 'react-window';
+import { FixedSizeList } from 'react-window';
 
-import {calcCategoryAmounts, getCategories} from '../../utils';
-import {Transaction} from '../../types';
-
+import { calcCategoryAmounts, getCategories } from '../../utils';
+import { Transaction } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': 'calc(50% - 1px)',
-    'height': '100vh',
-    'minWidth': '500px',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'backgroundColor': theme.palette.background.paper,
+    width: 'calc(50% - 1px)',
+    height: '100vh',
+    minWidth: '500px',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    backgroundColor: theme.palette.background.paper,
     '& .header': {
       width: 'calc(100% - 30px)',
       height: '64px',
@@ -57,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
     '& .listItem:hover': {
       backgroundColor: theme.palette.action.hover,
     },
+    '& .listItem:focus': {
+      outline: 'none',
+      backgroundColor: theme.palette.action.focus,
+    },
     '& .listItemDate': {
       display: 'flex',
       flexFlow: 'column nowrap',
@@ -82,28 +85,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface Category {
   label: string;
   amount: number;
-};
+}
 
 interface IRowProps {
   data: {
-    items: Category[],
-    currency: string,
+    items: Category[];
+    currency: string;
   };
   index: number;
-  style: any;
-};
+  style: React.CSSProperties;
+}
 
 interface IListProps {
   currency: string;
   transactions: Transaction[];
 }
 
-
-const renderRow = ({data, index, style}: IRowProps) => {
+const renderRow = ({ data, index, style }: IRowProps) => {
   const category = data.items[index];
 
   return (
@@ -116,21 +117,15 @@ const renderRow = ({data, index, style}: IRowProps) => {
         variant="body1"
         align="right"
       >
-        {
-          category.amount < 0 ?
-          `- ${data.currency} ${Math.abs(category.amount).toFixed(2)}` :
-          `${data.currency} ${category.amount.toFixed(2)}`
-        }
+        {category.amount < 0
+          ? `- ${data.currency} ${Math.abs(category.amount).toFixed(2)}`
+          : `${data.currency} ${category.amount.toFixed(2)}`}
       </Typography>
     </div>
   );
 };
 
-
-const CategoryList = ({
-  currency,
-  transactions,
-}: IListProps) => {
+const CategoryList = ({ currency, transactions }: IListProps) => {
   const classes = useStyles();
   const categories: Category[] = [];
   const categoryNames = getCategories(transactions);
@@ -145,27 +140,27 @@ const CategoryList = ({
 
   return (
     <div className={classes.root}>
-      {
-        categories.length === 0 ?
+      {categories.length === 0 ? (
         <div className="emptyList">
           <Typography variant="h6" color="textSecondary">
             No records to display.
           </Typography>
-        </div> :
+        </div>
+      ) : (
         <FixedSizeList
           className="list"
           height={window.innerHeight - 64}
-          width='100%'
+          width="100%"
           itemSize={70}
           itemCount={categories.length}
           itemData={{
             items: categories,
-            currency: currency,
+            currency,
           }}
         >
           {renderRow}
         </FixedSizeList>
-      }
+      )}
     </div>
   );
 };
@@ -174,7 +169,7 @@ CategoryList.propTypes = {
   /** The currency symbol */
   currency: PropTypes.string.isRequired,
   /** An array of Transactions */
-  transactions: PropTypes.array.isRequired,
+  transactions: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export {CategoryList};
+export default CategoryList;

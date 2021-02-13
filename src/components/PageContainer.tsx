@@ -1,31 +1,30 @@
 import React from 'react';
 
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {loadingLight, loadingDark} from '../assets/images';
-import {Accounts} from '../pages/Accounts';
-import {ErrorPage} from '../pages/ErrorPage';
-import {Overview} from '../pages/Overview';
-import {Settings} from '../pages/Settings';
-import {Statistics} from '../pages/Statistics';
-import {Subscriptions} from '../pages/Subscriptions';
-import {Transactions} from '../pages/Transactions';
-import {setActivePage} from '../redux/actions/ui';
-import {ReduxState} from '../types';
-
+import { loadingLight, loadingDark } from '../assets/images';
+import Accounts from '../pages/Accounts';
+import ErrorPage from '../pages/ErrorPage';
+import Overview from '../pages/Overview';
+import Settings from '../pages/Settings';
+import Statistics from '../pages/Statistics';
+import Subscriptions from '../pages/Subscriptions';
+import Transactions from '../pages/Transactions';
+import { setActivePage } from '../redux/actions/ui';
+import { ReduxState } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'position': 'relative',
-    'display': 'flex',
-    'flexFlow': 'row wrap',
-    'justifyContent': 'center',
-    'alignItems': 'center',
-    'width': 'calc(100% - 200px)',
-    'height': '100vh',
-    'backgroundColor': theme.palette.background.default,
+    position: 'relative',
+    display: 'flex',
+    flexFlow: 'row wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 'calc(100% - 200px)',
+    height: '100vh',
+    backgroundColor: theme.palette.background.default,
     '& .loading': {
       position: 'absolute',
       display: 'flex',
@@ -36,23 +35,19 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.default,
       zIndex: '99',
     },
-  }
+  },
 }));
 
-
 interface ITabProps {
-  children: any;
+  children: JSX.Element;
   id: number;
   activeId: number;
 }
 
-const Tab = ({children, id, activeId}: ITabProps) => {
+const Tab = ({ children, id, activeId }: ITabProps) => {
   return (
-    <div style={{width: '100%'}} hidden={id !== activeId}>
-      {
-        id === activeId &&
-        children
-      }
+    <div style={{ width: '100%' }} hidden={id !== activeId}>
+      {id === activeId && children}
     </div>
   );
 };
@@ -63,13 +58,12 @@ Tab.propTypes = {
   activeId: PropTypes.number.isRequired,
 };
 
-
 const PageContainer = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  let activePage = useSelector((state: ReduxState) => state.activePage);
+  const activePage = useSelector((state: ReduxState) => state.activePage);
   const error = useSelector((state: ReduxState) => state.error);
   const isFetching = useSelector((state: ReduxState) => state.isFetching);
 
@@ -77,20 +71,19 @@ const PageContainer = () => {
     if (error) {
       dispatch(setActivePage(-1));
     }
-  }, [error]);
+  }, [error, dispatch]);
 
   return (
     <div className={classes.root}>
-      {
-        isFetching &&
+      {isFetching && (
         <div className="loading">
           <img
-            src={theme.palette.type === 'light' ? loadingLight : loadingDark }
+            src={theme.palette.type === 'light' ? loadingLight : loadingDark}
             alt="loading"
             width="100px"
           />
         </div>
-      }
+      )}
       <Tab id={0} activeId={activePage}>
         <Overview />
       </Tab>
@@ -116,4 +109,4 @@ const PageContainer = () => {
   );
 };
 
-export {PageContainer};
+export default PageContainer;

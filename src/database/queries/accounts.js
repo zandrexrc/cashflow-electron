@@ -6,7 +6,7 @@ export const getAccounts = async () => {
     await connection.query(async (db) => {
       const stmt = `SELECT accountId, name, type, balance
                         FROM accounts`;
-      result = await db.all(stmt, function(err) {
+      result = await db.all(stmt, (err) => {
         if (err) {
           throw err;
         }
@@ -15,10 +15,9 @@ export const getAccounts = async () => {
   } catch (err) {
     result = {
       error: 'Failed to retrieve all accounts',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const addAccount = async (newAccount) => {
@@ -27,13 +26,9 @@ export const addAccount = async (newAccount) => {
     await connection.query(async (db) => {
       const stmt = `INSERT INTO accounts (name, type, balance)
                       VALUES (?, ?, ?)`;
-      const params = [
-        newAccount.name,
-        newAccount.type,
-        newAccount.balance,
-      ];
+      const params = [newAccount.name, newAccount.type, newAccount.balance];
 
-      const qRes = await db.run(stmt, params, function(err) {
+      const qRes = await db.run(stmt, params, (err) => {
         if (err) {
           throw err;
         }
@@ -46,10 +41,9 @@ export const addAccount = async (newAccount) => {
   } catch (err) {
     result = {
       error: 'Failed to create a new account',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const editAccount = async (account) => {
@@ -66,7 +60,7 @@ export const editAccount = async (account) => {
         account.accountId,
       ];
 
-      await db.run(stmt, params, function(err) {
+      await db.run(stmt, params, (err) => {
         if (err) {
           throw err;
         }
@@ -76,10 +70,9 @@ export const editAccount = async (account) => {
   } catch (err) {
     result = {
       error: 'Failed to edit the account',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const deleteAccount = async (id) => {
@@ -88,9 +81,9 @@ export const deleteAccount = async (id) => {
     await connection.query(async (db) => {
       const stmt = `DELETE FROM accounts WHERE accountId = ?`;
 
-      await db.run(stmt, [id], function(err) {
+      await db.run(stmt, [id], (err) => {
         if (err) {
-          throw (err);
+          throw err;
         }
       });
       result = {
@@ -101,46 +94,31 @@ export const deleteAccount = async (id) => {
   } catch (err) {
     result = {
       error: 'Failed to delete the account.',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };
 
 export const addMultipleAccounts = async (newAccounts) => {
   let result;
   try {
-    await connection.query(async (db) => {
-      const query = `INSERT INTO accounts (name, type, balance)
-                      VALUES (?, ?, ?)`;
-      const stmt = await db.prepare(query);
+    const promises = [];
+    for (let i = 0; i < newAccounts.length; i++) {
+      const account = newAccounts[i];
+      promises.push(addAccount(account));
+    }
 
-      const addedAccounts = [];
-      for (let i = 0; i < newAccounts.length; i++) {
-        const account = newAccounts[i];
-        const params = [
-          account.name,
-          account.type,
-          account.balance,
-        ];
-        const qRes = await stmt.run(params, function(err) {
-          if (err) {
-            throw err;
-          }
-        });
-        addedAccounts.push({
-          accountId: qRes.lastID,
-          ...account,
-        });
+    const addedAccounts = await Promise.all(promises);
+    for (let j = 0; j < addedAccounts.length; j++) {
+      if (addedAccounts[j].error) {
+        throw new Error(addedAccounts[j].error);
       }
-      await stmt.finalize();
-      result = addedAccounts;
-    });
+    }
+    result = addedAccounts;
   } catch (err) {
     result = {
       error: 'Failed to create multiple accounts',
-    }
-  } finally {
-    return result;
+    };
   }
+  return result;
 };

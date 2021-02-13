@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {IconButton, Paper, Slide, TextField} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { IconButton, Paper, Slide, TextField } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
@@ -11,20 +11,19 @@ import {
   isValidCurrencyAmount,
   validateAccount,
 } from '../../utils';
-import {Account, NewAccount} from '../../types';
-
+import { Account, NewAccount } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': 'calc(50%)',
-    'height': '100vh',
-    'minWidth': '500px',
-    'maxHeight': '100vh',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'position': 'absolute',
-    'right': '0',
-    'overflow': 'auto',
+    width: 'calc(50%)',
+    height: '100vh',
+    minWidth: '500px',
+    maxHeight: '100vh',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    position: 'absolute',
+    right: '0',
+    overflow: 'auto',
     '& .header': {
       width: 'calc(100% - 30px)',
       height: '64px',
@@ -34,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '& .details': {
-      'width': 'calc(100% - 80px)',
-      'height': 'calc(100% - 64px)',
-      'display': 'flex',
-      'flexFlow': 'column nowrap',
-      'alignItems': 'flex-start',
-      'margin': '0 auto',
+      width: 'calc(100% - 80px)',
+      height: 'calc(100% - 64px)',
+      display: 'flex',
+      flexFlow: 'column nowrap',
+      alignItems: 'flex-start',
+      margin: '0 auto',
       '& .datepicker': {
         margin: '20px 0',
       },
@@ -55,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IProps {
   account: Account | null;
   close: () => void;
@@ -63,7 +61,7 @@ interface IProps {
   isOpen: boolean;
   submit(a: Account): void;
   submit(a: NewAccount): void;
-};
+}
 
 const newAccount: NewAccount = {
   name: '',
@@ -71,14 +69,7 @@ const newAccount: NewAccount = {
   balance: 0,
 };
 
-
-const AccountForm = ({
-  account,
-  close,
-  currency,
-  isOpen,
-  submit,
-}: IProps) => {
+const AccountForm = ({ account, close, currency, isOpen, submit }: IProps) => {
   const classes = useStyles();
   const accountNames = Object.values(getAccountNames());
 
@@ -87,18 +78,16 @@ const AccountForm = ({
   const [nameError, setNameError] = React.useState('Required');
 
   React.useEffect(() => {
-    setState(account ? account : newAccount);
-    setNameError(account ? '' : 'Required' );
+    setState(account || newAccount);
+    setNameError(account ? '' : 'Required');
   }, [account, setState]);
 
-  const setName = (name: string) =>
-    setState({...state, name: name});
+  const setName = (name: string) => setState({ ...state, name });
 
-  const setType = (type: string) =>
-    setState({...state, type: type});
+  const setType = (type: string) => setState({ ...state, type });
 
   const setBalance = (balance: string) =>
-    setState({...state, balance: parseFloat(balance)});
+    setState({ ...state, balance: parseFloat(balance) });
 
   const changeName = (name: string) => {
     if (name.trim().length === 0) {
@@ -112,7 +101,7 @@ const AccountForm = ({
   };
 
   const cancelChanges = () => {
-    setState(account ? account : newAccount);
+    setState(account || newAccount);
     setNameError('');
     close();
   };
@@ -125,7 +114,7 @@ const AccountForm = ({
     }
   };
 
-  const handleKeyPress = (event: any) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
       saveChanges();
     }
@@ -149,10 +138,7 @@ const AccountForm = ({
             defaultValue={state.type}
             onChange={(event) => setType(event.target.value)}
             error={state.type.trim().length === 0}
-            helperText={
-              state.type.trim().length === 0 ?
-              'Required' : ''
-            }
+            helperText={state.type.trim().length === 0 ? 'Required' : ''}
             onKeyPress={handleKeyPress}
           />
           <TextField
@@ -174,10 +160,11 @@ const AccountForm = ({
             onChange={(event) => setBalance(event.target.value)}
             error={!isValidCurrencyAmount(state.balance.toString())}
             helperText={
-              !isValidCurrencyAmount(state.balance.toString()) ?
-              'Invalid amount' : ''
+              !isValidCurrencyAmount(state.balance.toString())
+                ? 'Invalid amount'
+                : ''
             }
-            InputProps={{endAdornment: currency}}
+            InputProps={{ endAdornment: currency }}
             onKeyPress={handleKeyPress}
           />
         </div>
@@ -188,7 +175,12 @@ const AccountForm = ({
 
 AccountForm.propTypes = {
   /** The account to be edited (if null, create a new account) */
-  account: PropTypes.object,
+  account: PropTypes.shape({
+    accountId: PropTypes.number,
+    name: PropTypes.string,
+    type: PropTypes.string,
+    balance: PropTypes.number,
+  }),
   /** Function to close the component */
   close: PropTypes.func.isRequired,
   /** The currency symbol */
@@ -199,4 +191,8 @@ AccountForm.propTypes = {
   submit: PropTypes.func.isRequired,
 };
 
-export {AccountForm};
+AccountForm.defaultProps = {
+  account: null,
+};
+
+export default AccountForm;

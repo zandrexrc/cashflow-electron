@@ -55,3 +55,23 @@ export type NewTransaction = {
   amount: number;
   accountId: number | null;
 };
+
+// CSV
+export type CsvSubscription = {
+  name: string;
+  firstBillingDate: string;
+  cycle: string;
+  category: string | null;
+  amount: number;
+  account: string;
+  accountId?: number | null;
+};
+
+export type CsvTransaction = {
+  date: string;
+  description: string;
+  category: string | null;
+  amount: number;
+  account: string;
+  accountId?: number | null;
+};

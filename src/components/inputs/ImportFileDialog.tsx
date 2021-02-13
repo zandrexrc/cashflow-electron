@@ -9,9 +9,8 @@ import {
   DialogTitle,
   Link,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,14 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IProps {
   cancel: () => void;
   importData: (file: File) => void;
   isOpen: boolean;
   sampleFile: string;
 }
-
 
 const ImportFileDialog = ({
   cancel,
@@ -41,11 +38,13 @@ const ImportFileDialog = ({
   sampleFile,
 }: IProps) => {
   const classes = useStyles();
-  const [state, setState] = React.useState<{uploadedFile: File | null}>({ uploadedFile: null });
+  const [state, setState] = React.useState<{ uploadedFile: File | null }>({
+    uploadedFile: null,
+  });
 
   const closeDialog = () => {
     cancel();
-    setState({uploadedFile: null});
+    setState({ uploadedFile: null });
   };
 
   const chooseFile = () => {
@@ -63,18 +62,14 @@ const ImportFileDialog = ({
   };
 
   return (
-    <Dialog
-      className={classes.root}
-      open={isOpen}
-      onClose={closeDialog}
-    >
-      <DialogTitle>
-        Import data from file
-      </DialogTitle>
+    <Dialog className={classes.root} open={isOpen} onClose={closeDialog}>
+      <DialogTitle>Import data from file</DialogTitle>
       <DialogContent>
         <DialogContentText>
           1. Download this&nbsp;
-          <Link href={sampleFile} download="sample.csv">sample file</Link>
+          <Link href={sampleFile} download="sample.csv">
+            sample file
+          </Link>
           &nbsp;and use it as a template.
         </DialogContentText>
         <ul className="list">
@@ -86,23 +81,23 @@ const ImportFileDialog = ({
           </li>
           <li>All fields except for category are required</li>
         </ul>
-        <DialogContentText>
-          2. Upload your file.
-        </DialogContentText>
+        <DialogContentText>2. Upload your file.</DialogContentText>
         <ul className="list">
           <li>The file must be a valid csv file</li>
           <li>Please DO NOT upload a large file to avoid crashing the app!</li>
-          <li>Kindly limit the file to a maximum of 1000 rows.</li>
+          <li>Kindly limit the file to a maximum of 100 rows.</li>
         </ul>
         <input
           id="fileInput"
           type="file"
           accept=".csv"
           hidden
-          onChange={(event) => setState({
-            uploadedFile: event.target.files ? event.target.files[0] : null
-          })}
-        ></input>
+          onChange={(event) =>
+            setState({
+              uploadedFile: event.target.files ? event.target.files[0] : null,
+            })
+          }
+        />
       </DialogContent>
       <DialogContent>
         <Button
@@ -116,7 +111,7 @@ const ImportFileDialog = ({
           Choose a file
         </Button>
         <span>
-          { state.uploadedFile ? state.uploadedFile.name : 'No file selected.' }
+          {state.uploadedFile ? state.uploadedFile.name : 'No file selected.'}
         </span>
       </DialogContent>
       <DialogActions>
@@ -139,7 +134,7 @@ ImportFileDialog.propTypes = {
   /** If true, the component is open */
   isOpen: PropTypes.bool.isRequired,
   /** A CSV file that can be downloaded and used as template */
-  sampleFile: PropTypes.any.isRequired,
+  sampleFile: PropTypes.string.isRequired,
 };
 
-export {ImportFileDialog};
+export default ImportFileDialog;

@@ -6,4 +6,4 @@ function getTheme(type: string): Theme {
   return type === 'light' ? lightTheme : darkTheme;
 }
 
-export {getTheme};
+export default getTheme;

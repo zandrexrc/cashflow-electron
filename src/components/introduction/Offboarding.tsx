@@ -1,24 +1,23 @@
 import React from 'react';
 
-import {Button, Typography} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { Button, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import PropTypes from 'prop-types';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import {editSettings} from '../../redux/actions/settings';
-import {Settings} from '../../types';
-
+import { editSettings } from '../../redux/actions/settings';
+import { Settings } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'justifyContent': 'center',
-    'alignItems': 'center',
-    'width': '100%',
-    'height': '100vh',
-    'backgroundColor': theme.palette.background.default,
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100vh',
+    backgroundColor: theme.palette.background.default,
     '& .icon': {
       color: theme.palette.primary.main,
       fontSize: '5em',
@@ -30,13 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IProps {
   settings: Settings;
 }
 
-
-const Offboarding = ({settings}: IProps) => {
+const Offboarding = ({ settings }: IProps) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -48,11 +45,11 @@ const Offboarding = ({settings}: IProps) => {
     <div className={classes.root}>
       <CheckCircleIcon className="icon" />
       <Typography variant="h3" color="primary" gutterBottom>
-        {`You're all set!`}
+        You're all set!
       </Typography>
       <Typography variant="body1" color="textPrimary" align="center">
-        Go on and explore the app. <br/>
-        {`We hope you'll enjoy Cashflow!`}
+        Go on and explore the app. <br />
+        We hope you'll enjoy Cashflow!
       </Typography>
       <Button
         className="button"
@@ -75,7 +72,11 @@ Offboarding.propTypes = {
    *  appTheme: (string: 'dark' | 'light')
    * }
    */
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.shape({
+    currency: PropTypes.string,
+    dateFormat: PropTypes.string,
+    appTheme: PropTypes.string,
+  }).isRequired,
 };
 
-export {Offboarding};
+export default Offboarding;

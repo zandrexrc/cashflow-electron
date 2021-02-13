@@ -6,8 +6,7 @@ import {
   SHOW_TOAST,
   HIDE_TOAST,
 } from '../../constants';
-import {ReduxAction} from '../../types';
-
+import { ReduxAction } from '../../types';
 
 export const activePage = (state = 0, action: ReduxAction) => {
   return action.type === SET_ACTIVE_PAGE ? action.payload : state;
@@ -41,7 +40,7 @@ export const toastState = (state = initialToastState, action: ReduxAction) => {
         severity: action.payload.severity,
       };
     case HIDE_TOAST:
-      return {...state, isOpen: false};
+      return { ...state, isOpen: false };
     default:
       return state;
   }

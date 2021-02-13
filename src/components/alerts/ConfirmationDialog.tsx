@@ -56,4 +56,4 @@ ConfirmationDialog.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-export {ConfirmationDialog};
+export default ConfirmationDialog;

@@ -15,21 +15,20 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
-import {useDispatch, useSelector} from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {DateFormats} from '../constants';
-import {editSettings} from '../redux/actions/settings';
-import {showToast} from '../redux/actions/ui';
-import {ReduxState} from '../types';
-
+import { DateFormats } from '../constants';
+import { editSettings } from '../redux/actions/settings';
+import { showToast } from '../redux/actions/ui';
+import { ReduxState } from '../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'flexGrow': 1,
-    'height': '100vh',
-    'maxWidth': '100%',
-    'backgroundColor': theme.palette.background.default,
+    flexGrow: 1,
+    height: '100vh',
+    maxWidth: '100%',
+    backgroundColor: theme.palette.background.default,
     '& .MuiToolbar-root': {
       maxWidth: '100%',
       borderBottom: `solid 1px ${theme.palette.divider}`,
@@ -46,24 +45,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const Settings = () => {
   // Fetch items from Redux store
   const dispatch = useDispatch();
   const settings = useSelector((state: ReduxState) => state.settings);
 
   // Local component state
-  const [state, setState] = React.useState({...settings});
+  const [state, setState] = React.useState({ ...settings });
 
   // Manage local state
-  const setCurrency = (c: string) =>
-    setState({...state, currency: c});
+  const setCurrency = (c: string) => setState({ ...state, currency: c });
 
-  const setDateFormat = (df: string) =>
-    setState({...state, dateFormat: df});
+  const setDateFormat = (df: string) => setState({ ...state, dateFormat: df });
 
-  const setAppTheme = (t: string) =>
-    setState({...state, appTheme: t});
+  const setAppTheme = (t: string) => setState({ ...state, appTheme: t });
 
   const validateCurrency = (c: string) => {
     return c.length > 0 && c.length <= 3;
@@ -83,9 +78,7 @@ const Settings = () => {
   return (
     <div className={classes.root}>
       <Toolbar>
-        <Typography variant="h6">
-          Settings
-        </Typography>
+        <Typography variant="h6">Settings</Typography>
       </Toolbar>
       <Grid container direction="column" item spacing={1} xs={12}>
         <Grid item xs={12}>
@@ -123,16 +116,16 @@ const Settings = () => {
               </Typography>
               <FormControl component="fieldset">
                 <Select
-                  onChange={(event) => setDateFormat(event.target.value as string)}
+                  onChange={(event) =>
+                    setDateFormat(event.target.value as string)
+                  }
                   value={state.dateFormat}
                 >
-                  {
-                    DateFormats.map((format, index) => (
-                      <MenuItem key={index} value={format}>
-                        {format.toUpperCase()}
-                      </MenuItem>
-                    ))
-                  }
+                  {DateFormats.map((format) => (
+                    <MenuItem key={format} value={format}>
+                      {format.toUpperCase()}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </CardContent>
@@ -187,4 +180,4 @@ const Settings = () => {
   );
 };
 
-export {Settings};
+export default Settings;

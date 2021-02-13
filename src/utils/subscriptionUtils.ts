@@ -7,9 +7,8 @@ import {
   setYear,
 } from 'date-fns';
 
-import {isValidCurrencyAmount} from './miscUtils';
-import {Subscription, NewSubscription, Filters} from '../types';
-
+import { isValidCurrencyAmount } from './miscUtils';
+import { Subscription, NewSubscription, Filters } from '../types';
 
 /**
  * Calculate the next billing date of a subscription.
@@ -28,14 +27,11 @@ function calcNextBillingDate(firstBillingDate: string, cycle: string) {
     if (isPast(nextBillingDate)) {
       nextBillingDate = addMonths(nextBillingDate, 1);
     }
-  } else {
-    if (isPast(nextBillingDate)) {
-      nextBillingDate = addYears(nextBillingDate, 1);
-    }
+  } else if (isPast(nextBillingDate)) {
+    nextBillingDate = addYears(nextBillingDate, 1);
   }
   return nextBillingDate;
 }
-
 
 /**
  * Calculate the monthly total and remaining subscription expenses
@@ -47,9 +43,10 @@ function calcMonthlySubscriptions(subscriptions: Subscription[]) {
   const today = new Date();
 
   // Use only the relevant subscriptions
-  const currentMonthSubscriptions = subscriptions.filter((obj) =>
-    obj.cycle === 'monthly' ||
-        new Date(obj.firstBillingDate).getMonth() === today.getMonth(),
+  const currentMonthSubscriptions = subscriptions.filter(
+    (obj) =>
+      obj.cycle === 'monthly' ||
+      new Date(obj.firstBillingDate).getMonth() === today.getMonth()
   );
 
   // Aggregate the total and remaining expenses from the subscriptions
@@ -57,7 +54,7 @@ function calcMonthlySubscriptions(subscriptions: Subscription[]) {
   let remainingExpenses = 0;
   for (let i = 0; i < currentMonthSubscriptions.length; i++) {
     const date = new Date(
-        currentMonthSubscriptions[i].firstBillingDate,
+      currentMonthSubscriptions[i].firstBillingDate
     ).getDate();
     if (date > today.getDate()) {
       remainingExpenses += currentMonthSubscriptions[i].amount;
@@ -68,9 +65,8 @@ function calcMonthlySubscriptions(subscriptions: Subscription[]) {
   // Convert expenses into positive values
   totalExpenses = Math.abs(totalExpenses);
   remainingExpenses = Math.abs(remainingExpenses);
-  return {totalExpenses, remainingExpenses};
+  return { totalExpenses, remainingExpenses };
 }
-
 
 /**
  * Calculate the yearly total and remaining subscription expenses
@@ -104,14 +100,13 @@ function calcYearlySubscriptions(subscriptions: Subscription[]) {
   const remainingMonthsInYear = 11 - today.getMonth();
   remainingExpenses += monthlyExpenses * remainingMonthsInYear;
   remainingExpenses -= currentMonthExpenses.remainingExpenses;
-  totalExpenses = (monthlyExpenses * 12) + yearlyExpenses;
+  totalExpenses = monthlyExpenses * 12 + yearlyExpenses;
 
   // Convert expenses into positive values
   totalExpenses = Math.abs(totalExpenses);
   remainingExpenses = Math.abs(remainingExpenses);
-  return {totalExpenses, remainingExpenses};
+  return { totalExpenses, remainingExpenses };
 }
-
 
 /**
  * Determines if a subscription passes the account filter.
@@ -120,8 +115,8 @@ function calcYearlySubscriptions(subscriptions: Subscription[]) {
  * @return {boolean}: true if the subscription passes the filter, false if not
  */
 function filterByAccount(term: string, subscription: Subscription) {
-  return term === 'All' || parseInt(term) === subscription.accountId;
-};
+  return term === 'All' || parseInt(term, 10) === subscription.accountId;
+}
 
 /**
  * Determines if a subscription passes the category filter.
@@ -132,11 +127,9 @@ function filterByAccount(term: string, subscription: Subscription) {
 function filterByCategory(term: string, subscription: Subscription) {
   if (subscription.category) {
     return term === 'All' || subscription.category === term;
-  } else {
-    return term === 'All' || term === 'Uncategorized';
   }
-};
-
+  return term === 'All' || term === 'Uncategorized';
+}
 
 /**
  * Converts a Date into milliseconds since epoch time
@@ -150,7 +143,6 @@ function getDateTime(date: Date | undefined | null) {
   return 0;
 }
 
-
 /**
  * Filter the subscriptions list based on a given set of filtering conditions.
  * @param {Array<Subscription>} subscriptions: a list of subscriptions
@@ -158,14 +150,16 @@ function getDateTime(date: Date | undefined | null) {
  * @return {Array<Subscription>}: the filtered list of subscriptions
  */
 function filterSubscriptions(subscriptions: Subscription[], filters: Filters) {
-  const filteredSubs = subscriptions.filter((s) => (
-    filterByAccount(filters.account, s) &&
-        filterByCategory(filters.category, s)
-  ));
-  filteredSubs.sort((a, b) => getDateTime(a.nextBillingDate) - getDateTime(b.nextBillingDate));
+  const filteredSubs = subscriptions.filter(
+    (s) =>
+      filterByAccount(filters.account, s) &&
+      filterByCategory(filters.category, s)
+  );
+  filteredSubs.sort(
+    (a, b) => getDateTime(a.nextBillingDate) - getDateTime(b.nextBillingDate)
+  );
   return filteredSubs;
 }
-
 
 /**
  * Checks if a subscription has valid values and attributes
@@ -175,14 +169,17 @@ function filterSubscriptions(subscriptions: Subscription[], filters: Filters) {
 function validateSubscription(subscription: NewSubscription) {
   let isValid = false;
 
-  const hasAllRequiredAttributes = subscription.name &&
-        subscription.firstBillingDate && subscription.cycle &&
-        subscription.amount && subscription.accountId;
+  const hasAllRequiredAttributes =
+    subscription.name &&
+    subscription.firstBillingDate &&
+    subscription.cycle &&
+    subscription.amount &&
+    subscription.accountId;
 
   if (hasAllRequiredAttributes) {
     const dateisValid = isValidDate(new Date(subscription.firstBillingDate));
-    const cycleIsValid = subscription.cycle === 'monthly' ||
-      subscription.cycle === 'yearly';
+    const cycleIsValid =
+      subscription.cycle === 'monthly' || subscription.cycle === 'yearly';
     const nameIsValid = subscription.name.trim().length > 0;
     const amountIsValid = isValidCurrencyAmount(subscription.amount.toString());
     isValid = dateisValid && cycleIsValid && nameIsValid && amountIsValid;
@@ -190,7 +187,6 @@ function validateSubscription(subscription: NewSubscription) {
 
   return isValid;
 }
-
 
 export {
   calcNextBillingDate,

@@ -1,35 +1,34 @@
 import React from 'react';
 
-import {FormControl, Select, MenuItem} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { FormControl, Select, MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {MonthNames} from '../../constants';
-import {getTransactionYears} from '../../utils';
-import {ReduxState} from '../../types';
-
+import { MonthNames } from '../../constants';
+import { getTransactionYears } from '../../utils';
+import { ReduxState } from '../../types';
 
 const useStyles = makeStyles({
   root: {
-    'width': '100%',
-    'display': 'flex',
-    'justifyContent': 'center',
-    'marginTop': '20px',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '20px',
     '& .MuiFormControl-root': {
       margin: '0 5px 20px 5px',
     },
   },
 });
 
+const monthNumbers = [...Array(12).keys()];
 
 interface IProps {
   enableSelectAll: boolean | null;
-  selectedDate: {month: number, year:number};
+  selectedDate: { month: number; year: number };
   setMonth: (m: number) => void;
   setYear: (y: number) => void;
 }
-
 
 const MonthYearSelector = ({
   enableSelectAll,
@@ -51,15 +50,12 @@ const MonthYearSelector = ({
           value={selectedDate.month}
           onChange={(event) => setMonth(event.target.value as number)}
         >
-          {
-            enableSelectAll &&
-            <MenuItem value={-1}>All-year</MenuItem>
-          }
-          {
-            MonthNames.map((month, index) => (
-              <MenuItem key={index} value={index}>{month}</MenuItem>
-            ))
-          }
+          {enableSelectAll && <MenuItem value={-1}>All-year</MenuItem>}
+          {monthNumbers.map((monthNum) => (
+            <MenuItem key={monthNum} value={monthNum}>
+              {MonthNames[monthNum]}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       <FormControl>
@@ -69,14 +65,11 @@ const MonthYearSelector = ({
           value={selectedDate.year}
           onChange={(event) => setYear(event.target.value as number)}
         >
-          {
-            !transactionYears.includes(currentYear) &&
-            <MenuItem value={currentYear}>
-              {currentYear}
-            </MenuItem>
-          }
-          {transactionYears.map((year, index) => (
-            <MenuItem key={index} value={year}>
+          {!transactionYears.includes(currentYear) && (
+            <MenuItem value={currentYear}>{currentYear}</MenuItem>
+          )}
+          {transactionYears.map((year) => (
+            <MenuItem key={year} value={year}>
               {year}
             </MenuItem>
           ))}
@@ -95,11 +88,18 @@ MonthYearSelector.propTypes = {
    *  year: (number)
    * }
    */
-  selectedDate: PropTypes.object.isRequired,
+  selectedDate: PropTypes.shape({
+    month: PropTypes.number,
+    year: PropTypes.number,
+  }).isRequired,
   /** Function to change the selected month */
   setMonth: PropTypes.func.isRequired,
   /** Function to change the selected year */
   setYear: PropTypes.func.isRequired,
 };
 
-export {MonthYearSelector};
+MonthYearSelector.defaultProps = {
+  enableSelectAll: false,
+};
+
+export default MonthYearSelector;

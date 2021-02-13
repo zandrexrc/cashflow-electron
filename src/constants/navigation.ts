@@ -1,5 +1,5 @@
 // Assign ID and label to each page
-export const Navigation = [
+const Navigation = [
   {
     id: 0,
     name: 'Overview',
@@ -25,3 +25,5 @@ export const Navigation = [
     name: 'Settings',
   },
 ];
+
+export default Navigation;

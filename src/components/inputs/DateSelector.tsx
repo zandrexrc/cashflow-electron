@@ -5,23 +5,23 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import {isValid, format} from 'date-fns';
+import { isValid, format } from 'date-fns';
 import PropTypes from 'prop-types';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {DATE_FORMAT_ISO} from '../../constants';
-import {ReduxState} from '../../types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-
+import { DATE_FORMAT_ISO } from '../../constants';
+import { ReduxState } from '../../types';
 
 interface IProps {
   selectedDate: string;
   setDate: (d: string) => void;
-};
+}
 
-
-const DateSelector = ({selectedDate, setDate}: IProps) => {
-  const dateFormat = useSelector((state: ReduxState) => state.settings.dateFormat);
+const DateSelector = ({ selectedDate, setDate }: IProps) => {
+  const dateFormat = useSelector(
+    (state: ReduxState) => state.settings.dateFormat
+  );
   // const currentDate = format(new Date(), DATE_FORMAT_ISO);
   const datePickerValue = new Date(selectedDate);
 
@@ -57,4 +57,4 @@ DateSelector.propTypes = {
   setDate: PropTypes.func.isRequired,
 };
 
-export {DateSelector};
+export default DateSelector;

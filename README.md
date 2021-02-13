@@ -20,14 +20,6 @@ yarn
 
 ## Starting Development
 
-### About the database files
-
-There are two database files located in _src/database_.  
-Initially, both of them are empty (tables are already defined, but no data yet).  
-We're going to be saving data in the _cashflow.db_ database file,
-while _cashflow-empty.db_ will remain empty so we can use it to reset our data if needed.  
-It may also be helpful to add the _cashflow.db_ file to _.gitignore_ to prevent git from tracking it.
-
 ### Running the app
 
 Start the app in the `dev` environment:
@@ -35,6 +27,14 @@ Start the app in the `dev` environment:
 ```bash
 yarn start
 ```
+
+### About the database files
+
+There are two database files located in _src/database_. Initially, both of them
+are empty (tables are already defined, but no data yet).  
+We're going to be saving data in the _cashflow.db_ database file,
+while _cashflow-empty.db_ will remain empty so we can use it to reset our data if needed.  
+It may also be helpful to add the _cashflow.db_ file to _.gitignore_ to prevent git from tracking it.
 
 ## Packaging for Production
 

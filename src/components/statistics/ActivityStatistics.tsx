@@ -1,29 +1,28 @@
 import React from 'react';
 
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import {LineChart} from '../charts/LineChart';
-import {AccountSelector} from '../inputs/AccountSelector';
-import {CategorySelector} from '../inputs/CategorySelector';
-import {MonthYearSelector} from '../inputs/MonthYearSelector';
-import {ChartData, Filters} from '../../types';
-
+import LineChart from '../charts/LineChart';
+import AccountSelector from '../inputs/AccountSelector';
+import CategorySelector from '../inputs/CategorySelector';
+import MonthYearSelector from '../inputs/MonthYearSelector';
+import { Filters, LineChartData } from '../../types';
 
 const useStyles = makeStyles({
   root: {
-    'width': '100%',
-    'height': 'calc(100vh - 64px)',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'justifyContent': 'space-between',
-    'alignItems': 'center',
+    width: '100%',
+    height: 'calc(100vh - 64px)',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     '& .filtersContainer': {
-      'width': '100%',
-      'height': '74px',
-      'display': 'flex',
-      'justifyContent': 'flex-end',
-      'alignItems': 'center',
+      width: '100%',
+      height: '74px',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
       '& .filter': {
         marginRight: '30px',
       },
@@ -40,39 +39,36 @@ const useStyles = makeStyles({
   },
 });
 
-
 interface IProps {
-  data: ChartData;
+  data: LineChartData;
   currency: string;
   filters: Filters;
   setFilters: (f: Filters) => void;
 }
 
-
 const ActivityStatistics = ({
   data,
   currency,
   filters,
-  setFilters
+  setFilters,
 }: IProps) => {
   const classes = useStyles();
 
-  const setAccount = (account: string) =>
-    setFilters({...filters, account: account});
+  const setAccount = (account: string) => setFilters({ ...filters, account });
 
   const setCategory = (category: string) =>
-    setFilters({...filters, category: category});
+    setFilters({ ...filters, category });
 
   const setMonth = (month: number) =>
     setFilters({
       ...filters,
-      date: {...filters.date, month: month},
+      date: { ...filters.date, month },
     });
 
   const setYear = (year: number) =>
     setFilters({
       ...filters,
-      date: {...filters.date, year: year},
+      date: { ...filters.date, year },
     });
 
   return (
@@ -88,7 +84,7 @@ const ActivityStatistics = ({
         </div>
         <div className="filter">
           <CategorySelector
-            type='transactions'
+            type="transactions"
             selectedCategory={filters.category}
             setCategory={setCategory}
             enableSelectAll
@@ -119,13 +115,23 @@ const ActivityStatistics = ({
 ActivityStatistics.propTypes = {
   /** The data to be displayed in the chart
    * (refer to utils/graphUtils.js) */
-  data: PropTypes.object.isRequired,
+  data: PropTypes.shape({
+    datasets: PropTypes.arrayOf(PropTypes.object),
+    labels: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
   /** The currency symbol */
   currency: PropTypes.string.isRequired,
   /** A Filter object */
-  filters: PropTypes.object.isRequired,
+  filters: PropTypes.shape({
+    account: PropTypes.string,
+    category: PropTypes.string,
+    date: PropTypes.shape({
+      month: PropTypes.number,
+      year: PropTypes.number,
+    }),
+  }).isRequired,
   /** Function to change the filters */
   setFilters: PropTypes.func.isRequired,
 };
 
-export {ActivityStatistics};
+export default ActivityStatistics;

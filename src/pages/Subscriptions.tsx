@@ -1,24 +1,22 @@
 import React from 'react';
 
-import {makeStyles} from '@material-ui/core/styles';
-import {useDispatch, useSelector} from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {ConfirmationDialog} from '../components/alerts/ConfirmationDialog';
-import {SubscriptionDetails} from '../components/details/SubscriptionDetails';
-import {SubscriptionForm} from '../components/forms/SubscriptionForm';
-import {ImportFileDialog} from '../components/inputs/ImportFileDialog';
-import {SubscriptionList} from '../components/lists/SubscriptionList';
-import {
-  SubscriptionStatistics,
-} from '../components/statistics/SubscriptionStatistics';
-import {SampleSubscription} from '../constants';
+import ConfirmationDialog from '../components/alerts/ConfirmationDialog';
+import SubscriptionDetails from '../components/details/SubscriptionDetails';
+import SubscriptionForm from '../components/forms/SubscriptionForm';
+import ImportFileDialog from '../components/inputs/ImportFileDialog';
+import SubscriptionList from '../components/lists/SubscriptionList';
+import SubscriptionStatistics from '../components/statistics/SubscriptionStatistics';
+import { SampleSubscription } from '../constants';
 import {
   addSubscription,
   editSubscription,
   deleteSubscription,
   addMultipleSubscriptions,
 } from '../redux/actions/subscriptions';
-import {setError} from '../redux/actions/ui';
+import { setError } from '../redux/actions/ui';
 import {
   createSubscriptionsGraphData,
   csvToSubscriptions,
@@ -26,8 +24,7 @@ import {
   generateSampleCsv,
   subscriptionsToCsv,
 } from '../utils';
-import {ReduxState, Filters, Subscription, NewSubscription} from '../types';
-
+import { ReduxState, Filters, Subscription, NewSubscription } from '../types';
 
 const useStyles = makeStyles({
   root: {
@@ -52,7 +49,10 @@ const Subscriptions = () => {
 
   // Local state
   const [filters, setFilters] = React.useState(initialFilters);
-  const [selectedSubscription, setSelectedSubscription] = React.useState<Subscription | null>(null);
+  const [
+    selectedSubscription,
+    setSelectedSubscription,
+  ] = React.useState<Subscription | null>(null);
   const [ui, setUi] = React.useState({
     chartScope: 'monthly',
     confirmationDialogIsOpen: false,
@@ -64,41 +64,45 @@ const Subscriptions = () => {
   // Fetch items from Redux store
   const dispatch = useDispatch();
   const currency = useSelector((state: ReduxState) => state.settings.currency);
-  const dateFormat = useSelector((state: ReduxState) => state.settings.dateFormat);
+  const dateFormat = useSelector(
+    (state: ReduxState) => state.settings.dateFormat
+  );
   const subscriptions = useSelector((state: ReduxState) => state.subscriptions);
   const displayedSubscriptions = filterSubscriptions(subscriptions, filters);
   const chartData = createSubscriptionsGraphData(
-      displayedSubscriptions, ui.chartScope,
+    displayedSubscriptions,
+    ui.chartScope
   );
-  const sampleFile = generateSampleCsv(
-      [SampleSubscription, SampleSubscription],
-  );
+  const sampleFile = generateSampleCsv([
+    SampleSubscription,
+    SampleSubscription,
+  ]);
 
   // Manage state
   const openDetailsTab = (subscription: Subscription) => {
     setSelectedSubscription(subscription);
-    setUi({...ui, detailsTabIsOpen: true});
+    setUi({ ...ui, detailsTabIsOpen: true });
   };
 
   const closeDetailsTab = () => {
     setSelectedSubscription(null);
-    setUi({...ui, detailsTabIsOpen: false});
+    setUi({ ...ui, detailsTabIsOpen: false });
   };
 
   const toggleFormTab = () => {
-    setUi({...ui, formTabIsOpen: !ui.formTabIsOpen});
+    setUi({ ...ui, formTabIsOpen: !ui.formTabIsOpen });
   };
 
   const toggleConfirmationDialog = () => {
-    setUi({...ui, confirmationDialogIsOpen: !ui.confirmationDialogIsOpen});
+    setUi({ ...ui, confirmationDialogIsOpen: !ui.confirmationDialogIsOpen });
   };
 
   const toggleImportFileDialog = () => {
-    setUi({...ui, importFileDialogIsOpen: !ui.importFileDialogIsOpen});
+    setUi({ ...ui, importFileDialogIsOpen: !ui.importFileDialogIsOpen });
   };
 
   const setChartScope = (scope: string) => {
-    setUi({...ui, chartScope: scope});
+    setUi({ ...ui, chartScope: scope });
   };
 
   // Manage data
@@ -117,7 +121,11 @@ const Subscriptions = () => {
   const deleteData = () => {
     if (selectedSubscription) {
       dispatch(deleteSubscription(selectedSubscription.subscriptionId));
-      setUi({...ui, detailsTabIsOpen: false, confirmationDialogIsOpen: false});
+      setUi({
+        ...ui,
+        detailsTabIsOpen: false,
+        confirmationDialogIsOpen: false,
+      });
       setSelectedSubscription(null);
     }
   };
@@ -186,4 +194,4 @@ const Subscriptions = () => {
   );
 };
 
-export {Subscriptions};
+export default Subscriptions;

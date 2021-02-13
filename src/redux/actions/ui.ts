@@ -29,7 +29,7 @@ export const setError = (error: string | null) => ({
 
 export const showToast = (message: string | null, severity: string) => ({
   type: SHOW_TOAST,
-  payload: {message, severity},
+  payload: { message, severity },
 });
 
 export const hideToast = () => ({

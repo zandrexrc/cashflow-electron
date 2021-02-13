@@ -10,34 +10,33 @@ import {
   Slide,
   TextField,
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 
-import {DATE_FORMAT_ISO} from '../../constants';
+import { DATE_FORMAT_ISO } from '../../constants';
 import {
   isValidCurrencyAmount,
   printDate,
   validateSubscription,
 } from '../../utils';
-import {AccountSelector} from '../inputs/AccountSelector';
-import {CategorySelector} from '../inputs/CategorySelector';
-import {DateSelector} from '../inputs/DateSelector';
-import {Subscription, NewSubscription} from '../../types';
-
+import AccountSelector from '../inputs/AccountSelector';
+import CategorySelector from '../inputs/CategorySelector';
+import DateSelector from '../inputs/DateSelector';
+import { Subscription, NewSubscription } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    'width': 'calc(50%)',
-    'height': '100vh',
-    'minWidth': '500px',
-    'maxHeight': '100vh',
-    'display': 'flex',
-    'flexFlow': 'column nowrap',
-    'position': 'absolute',
-    'right': '0',
-    'overflow': 'auto',
+    width: 'calc(50%)',
+    height: '100vh',
+    minWidth: '500px',
+    maxHeight: '100vh',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    position: 'absolute',
+    right: '0',
+    overflow: 'auto',
     '& .header': {
       width: 'calc(100% - 30px)',
       height: '64px',
@@ -47,12 +46,12 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '& .details': {
-      'width': 'calc(100% - 80px)',
-      'height': 'calc(100% - 64px)',
-      'display': 'flex',
-      'flexFlow': 'column nowrap',
-      'alignItems': 'flex-start',
-      'margin': '0 auto',
+      width: 'calc(100% - 80px)',
+      height: 'calc(100% - 64px)',
+      display: 'flex',
+      flexFlow: 'column nowrap',
+      alignItems: 'flex-start',
+      margin: '0 auto',
       '& .dates': {
         width: '100%',
         display: 'flex',
@@ -74,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 interface IProps {
   close: () => void;
   currency: string;
@@ -82,7 +80,7 @@ interface IProps {
   submit(a: Subscription): void;
   submit(a: NewSubscription): void;
   subscription: Subscription | null;
-};
+}
 
 const newSubscription: NewSubscription = {
   name: '',
@@ -92,7 +90,6 @@ const newSubscription: NewSubscription = {
   category: '',
   amount: 0,
 };
-
 
 const SubscriptionForm = ({
   close,
@@ -106,29 +103,26 @@ const SubscriptionForm = ({
   const [state, setState] = React.useState(newSubscription);
 
   React.useEffect(() => {
-    setState(subscription ? subscription : newSubscription);
+    setState(subscription || newSubscription);
   }, [subscription, setState]);
 
   const setFirstBillingDate = (date: string) =>
-    setState({...state, firstBillingDate: date});
+    setState({ ...state, firstBillingDate: date });
 
-  const setName = (name: string) =>
-    setState({...state, name: name});
+  const setName = (name: string) => setState({ ...state, name });
 
-  const setCycle = (cycle: string) =>
-    setState({...state, cycle: cycle});
+  const setCycle = (cycle: string) => setState({ ...state, cycle });
 
   const setAmount = (amount: string) =>
-    setState({...state, amount: parseFloat(amount)});
+    setState({ ...state, amount: parseFloat(amount) });
 
   const setAccount = (accountId: string) =>
-    setState({...state, accountId: parseInt(accountId)});
+    setState({ ...state, accountId: parseInt(accountId, 10) });
 
-  const setCategory = (category: string) =>
-    setState({...state, category: category});
+  const setCategory = (category: string) => setState({ ...state, category });
 
   const cancelChanges = () => {
-    setState(subscription ? subscription : newSubscription);
+    setState(subscription || newSubscription);
     close();
   };
 
@@ -171,8 +165,8 @@ const SubscriptionForm = ({
                 value={state.cycle}
                 onChange={(event) => setCycle(event.target.value as string)}
               >
-                <MenuItem value={'monthly'}>Monthly</MenuItem>
-                <MenuItem value={'yearly'}>Yearly</MenuItem>
+                <MenuItem value="monthly">Monthly</MenuItem>
+                <MenuItem value="yearly">Yearly</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -184,10 +178,7 @@ const SubscriptionForm = ({
             defaultValue={state.name}
             onChange={(event) => setName(event.target.value)}
             error={state.name.trim().length === 0}
-            helperText={
-              state.name.trim().length === 0 ?
-              'Required' : ''
-            }
+            helperText={state.name.trim().length === 0 ? 'Required' : ''}
             onKeyPress={handleKeyPress}
           />
           <TextField
@@ -199,10 +190,11 @@ const SubscriptionForm = ({
             onChange={(event) => setAmount(event.target.value)}
             error={!isValidCurrencyAmount(state.amount.toString())}
             helperText={
-              !isValidCurrencyAmount(state.amount.toString()) ?
-              'Invalid amount' : ''
+              !isValidCurrencyAmount(state.amount.toString())
+                ? 'Invalid amount'
+                : ''
             }
-            InputProps={{endAdornment: currency}}
+            InputProps={{ endAdornment: currency }}
             onKeyPress={handleKeyPress}
           />
           <div className="tags">
@@ -216,9 +208,7 @@ const SubscriptionForm = ({
             <AccountSelector
               enableSelectAll={false}
               selectedAccount={
-                state.accountId ?
-                state.accountId.toString() :
-                ''
+                state.accountId ? state.accountId.toString() : ''
               }
               setAccount={setAccount}
             />
@@ -239,7 +229,20 @@ SubscriptionForm.propTypes = {
   /** Function called when submitting the form */
   submit: PropTypes.func.isRequired,
   /** The subscription to be edited (if null, create a new subscription) */
-  subscription: PropTypes.object,
+  subscription: PropTypes.shape({
+    subscriptionId: PropTypes.number,
+    name: PropTypes.string,
+    firstBillingDate: PropTypes.string,
+    nextBillingDate: PropTypes.instanceOf(Date),
+    cycle: PropTypes.string,
+    category: PropTypes.string,
+    amount: PropTypes.number,
+    accountId: PropTypes.number,
+  }),
 };
 
-export {SubscriptionForm};
+SubscriptionForm.defaultProps = {
+  subscription: null,
+};
+
+export default SubscriptionForm;

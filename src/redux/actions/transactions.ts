@@ -5,10 +5,9 @@ import {
   DELETE_TRANSACTION,
   ADD_MULTIPLE_TRANSACTIONS,
 } from '../../constants';
-import {toggleIsFetching, setError, showToast} from './ui';
-import {Transaction, NewTransaction, ReduxThunk} from '../../types';
+import { toggleIsFetching, setError, showToast } from './ui';
+import { Transaction, NewTransaction, ReduxThunk } from '../../types';
 import fetch from '../../event_emitters/rendererEmitters';
-
 
 export function getTransactions(): ReduxThunk {
   return async (dispatch, getState) => {
@@ -18,13 +17,13 @@ export function getTransactions(): ReduxThunk {
         const payload = await fetch(GET_TRANSACTIONS, null);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: GET_TRANSACTIONS,
-          payload: payload
+          payload,
         });
       } catch (error) {
         dispatch(toggleIsFetching(false));
@@ -42,13 +41,13 @@ export function addTransaction(newTransaction: NewTransaction): ReduxThunk {
         const payload = await fetch(ADD_TRANSACTION, newTransaction);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: ADD_TRANSACTION,
-          payload: payload
+          payload,
         });
         dispatch(showToast('Successfully added transaction', 'success'));
       } catch (error) {
@@ -67,13 +66,13 @@ export function editTransaction(newTransaction: Transaction): ReduxThunk {
         const payload = await fetch(EDIT_TRANSACTION, newTransaction);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: EDIT_TRANSACTION,
-          payload: payload
+          payload,
         });
         dispatch(showToast('Successfully edited transaction', 'success'));
       } catch (error) {
@@ -92,13 +91,13 @@ export function deleteTransaction(id: number): ReduxThunk {
         const payload = await fetch(DELETE_TRANSACTION, id);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: DELETE_TRANSACTION,
-          payload: payload.transactionId
+          payload: payload.transactionId,
         });
         dispatch(showToast('Successfully deleted transaction', 'success'));
       } catch (error) {
@@ -109,7 +108,9 @@ export function deleteTransaction(id: number): ReduxThunk {
   };
 }
 
-export function addMultipleTransactions(newTransactions: NewTransaction[]): ReduxThunk {
+export function addMultipleTransactions(
+  newTransactions: NewTransaction[]
+): ReduxThunk {
   return async (dispatch, getState) => {
     if (!getState().isFetching) {
       dispatch(toggleIsFetching(true));
@@ -117,13 +118,13 @@ export function addMultipleTransactions(newTransactions: NewTransaction[]): Redu
         const payload = await fetch(ADD_MULTIPLE_TRANSACTIONS, newTransactions);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: ADD_MULTIPLE_TRANSACTIONS,
-          payload: payload
+          payload,
         });
         dispatch(showToast('Successfully added transactions', 'success'));
       } catch (error) {

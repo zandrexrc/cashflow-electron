@@ -1,4 +1,3 @@
-
 import {
   GET_ACCOUNTS,
   ADD_ACCOUNT,
@@ -9,10 +8,9 @@ import {
   UPDATE_ACCOUNT_BALANCE,
   ADD_MULTIPLE_ACCOUNTS,
 } from '../../constants';
-import {toggleIsFetching, setError, showToast} from './ui';
-import {Account, NewAccount, ReduxThunk} from '../../types';
+import { toggleIsFetching, setError, showToast } from './ui';
+import { Account, NewAccount, ReduxThunk } from '../../types';
 import fetch from '../../event_emitters/rendererEmitters';
-
 
 export function getAccounts(): ReduxThunk {
   return async (dispatch, getState) => {
@@ -22,13 +20,13 @@ export function getAccounts(): ReduxThunk {
         const payload = await fetch(GET_ACCOUNTS, null);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: GET_ACCOUNTS,
-          payload: payload
+          payload,
         });
       } catch (error) {
         dispatch(toggleIsFetching(false));
@@ -46,13 +44,13 @@ export function addAccount(newAccount: NewAccount): ReduxThunk {
         const payload = await fetch(ADD_ACCOUNT, newAccount);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: ADD_ACCOUNT,
-          payload: payload
+          payload,
         });
         dispatch(showToast('Successfully added account', 'success'));
       } catch (error) {
@@ -71,13 +69,13 @@ export function editAccount(newAccount: Account): ReduxThunk {
         const payload = await fetch(EDIT_ACCOUNT, newAccount);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: EDIT_ACCOUNT,
-          payload: payload
+          payload,
         });
         dispatch(showToast('Successfully edited account', 'success'));
       } catch (error) {
@@ -96,21 +94,21 @@ export function deleteAccount(id: number): ReduxThunk {
         const payload = await fetch(DELETE_ACCOUNT, id);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: DELETE_TRANSACTIONS_IN_ACCOUNT,
-          payload: payload.accountId
+          payload: payload.accountId,
         });
         dispatch({
           type: DELETE_SUBSCRIPTIONS_IN_ACCOUNT,
-          payload: payload.accountId
+          payload: payload.accountId,
         });
         dispatch({
           type: DELETE_ACCOUNT,
-          payload: payload.accountId
+          payload: payload.accountId,
         });
         dispatch(showToast('Successfully deleted account', 'success'));
       } catch (error) {
@@ -123,7 +121,7 @@ export function deleteAccount(id: number): ReduxThunk {
 
 export const updateAccountBalance = (id: number, amount: number) => ({
   type: UPDATE_ACCOUNT_BALANCE,
-  payload: {id, amount},
+  payload: { id, amount },
 });
 
 export function addMultipleAccounts(newAccounts: NewAccount[]): ReduxThunk {
@@ -134,13 +132,13 @@ export function addMultipleAccounts(newAccounts: NewAccount[]): ReduxThunk {
         const payload = await fetch(ADD_MULTIPLE_ACCOUNTS, newAccounts);
 
         if (payload.error) {
-          throw (payload.error);
+          throw payload.error;
         }
 
         dispatch(toggleIsFetching(false));
         dispatch({
           type: ADD_MULTIPLE_ACCOUNTS,
-          payload: payload
+          payload,
         });
         dispatch(showToast('Successfully added accounts', 'success'));
       } catch (error) {
