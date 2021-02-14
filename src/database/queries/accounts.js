@@ -52,7 +52,7 @@ export const editAccount = async (account) => {
     await connection.query(async (db) => {
       const stmt = `UPDATE accounts
                     SET name = ?, type = ?, balance = ?
-                    WHERE accountID = ?`;
+                    WHERE accountId = ?`;
       const params = [
         account.name,
         account.type,

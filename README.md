@@ -8,6 +8,8 @@ Cashflow is an app that helps you keep track of your finances.
 
 </div>
 
+This is the official Electron implementation of the [Cashflow project](https://github.com/zandrexrc/cashflow).
+
 ## Install
 
 First, clone the repo via git and install dependencies:
