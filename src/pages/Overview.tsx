@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     maxWidth: 'calc(100% - 40px)',
+    height: '100vh',
     padding: '15px 20px 20px 20px',
     backgroundColor: theme.palette.background.default,
     '& .title': {
