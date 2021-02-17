@@ -27,15 +27,14 @@ function getCategories(transactions: Transaction[] | Subscription[]) {
 function calcCategoryAmounts(items: Transaction[] | Subscription[]) {
   const categoryAmounts: { [key: string]: number } = {};
   for (let i = 0; i < items.length; i++) {
-    const ctg = items[i].category;
-    if (ctg !== null) {
-      const category = ctg.toLowerCase();
+    const { category } = items[i];
+    if (category !== null) {
       categoryAmounts[category] = categoryAmounts[category]
         ? categoryAmounts[category] + items[i].amount
         : items[i].amount;
     } else {
-      categoryAmounts.uncategorized = categoryAmounts.uncategorized
-        ? categoryAmounts.uncategorized + items[i].amount
+      categoryAmounts.Uncategorized = categoryAmounts.Uncategorized
+        ? categoryAmounts.Uncategorized + items[i].amount
         : items[i].amount;
     }
   }

@@ -1,13 +1,13 @@
 {
   "name": "cashflow-electron-react",
   "productName": "cashflow-electron-react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An app to help you keep track of your finances.",
   "main": "./main.prod.js",
   "author": {
     "name": "Zandrex Camagon",
     "email": "zandrexrc@gmail.com",
-    "url": "https://github.com/zandrexrc/cashflow"
+    "url": "https://github.com/zandrexrc/cashflow-electron"
   },
   "scripts": {
     "electron-rebuild": "node -r ../.erb/scripts/BabelRegister.js ../.erb/scripts/ElectronRebuild.js",
