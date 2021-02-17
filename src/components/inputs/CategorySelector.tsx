@@ -47,7 +47,7 @@ const CategorySelector = ({
       selectOnFocus
       options={categories}
       value={selectedCategory}
-      onChange={(_event, value) => setCategory(value)}
+      onBlur={(event) => setCategory((event.target as HTMLInputElement).value)}
       renderInput={(params) => <TextField label="Category" {...params} />}
       PopperComponent={(props) => (
         <Popper

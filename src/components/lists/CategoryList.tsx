@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { FixedSizeList } from 'react-window';
 
-import { calcCategoryAmounts, getCategories } from '../../utils';
+import { calcCategoryAmounts } from '../../utils';
 import { Transaction } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
@@ -128,12 +128,12 @@ const renderRow = ({ data, index, style }: IRowProps) => {
 const CategoryList = ({ currency, transactions }: IListProps) => {
   const classes = useStyles();
   const categories: Category[] = [];
-  const categoryNames = getCategories(transactions);
   const categoryAmounts = calcCategoryAmounts(transactions);
+  const categoryNames = Object.keys(categoryAmounts);
   for (let i = 0; i < categoryNames.length; i++) {
     categories.push({
       label: categoryNames[i],
-      amount: categoryAmounts[categoryNames[i].toLowerCase()],
+      amount: categoryAmounts[categoryNames[i]],
     });
   }
   categories.sort((a, b) => a.amount - b.amount);
